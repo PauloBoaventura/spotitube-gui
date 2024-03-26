@@ -45,6 +45,7 @@ def youtube():
 
 def main():
     root = customtkinter.CTk()
+    root.minsize(480, 270)
     root.mainloop()
 
 if __name__ == "__main__":
