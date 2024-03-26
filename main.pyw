@@ -133,7 +133,31 @@ def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
             else:
                 CTkMessagebox(title="Error", message=f"{url} doesnt seem to be track, album or playlist", icon="cancel")
         except Exception as e:
-            CTkMessagebox(title="Error", message=f"{e}", icon="cancel") 
+            CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
+    def sp_from_txt():
+        with open(f"{cwd}\\spotify_list.txt", "r") as file:
+            file = file.readlines()
+            for line in file:
+                url = line.strip()
+                try:
+                    if "you can add spotify SONG links to download from txt - remove the links below and add like that" in url:
+                        pass
+                    else:
+                        try:
+                            if "track" in url:
+                                os.chdir(spotify_songs_folder)
+                                subprocess.run(['spotdl', url], check=True)
+                                CTkMessagebox(message="Songs successfully downloaded to content/spotify/songs", icon="check", option_1="OK")
+                            elif "album" in url:
+                                CTkMessagebox(title="Error", message=f"{url} seems to be an album", icon="cancel")
+                            elif "playlist" in url:
+                                CTkMessagebox(title="Error", message=f"{url} seems to be a playlist", icon="cancel")
+                            else:
+                                CTkMessagebox(title="Error", message=f"{url} doesnt seem to be track, album or playlist", icon="cancel")
+                        except Exception as e:
+                            CTkMessagebox(title="error", message=f"{e}", icon="cancel")
+                except Exception as e:
+                    CTkMessagebox(title="error", message=f"{e}", icon="cancel")
 
     spotify_window = customtkinter.CTkToplevel(root)
     spotify_window.minsize(480, 270)
@@ -160,8 +184,11 @@ def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
     spotify_playlist_button = customtkinter.CTkButton(master=spotify_window, command=lambda: sp_playlist(spotify_url), text="Playlist")
     spotify_playlist_button.pack(padx=10, pady=10)
 
+    spotify_from_txt = customtkinter.CTkButton(master=spotify_window, command=lambda: sp_from_txt(), text="Load from spotify_list.txt")
+    spotify_from_txt.pack(padx=10, pady=0)
+
     back_button = customtkinter.CTkButton(master=spotify_window, command=spotify_window.destroy, text="Back")
-    back_button.pack()
+    back_button.pack(padx=10, pady=10)
 
 def main():
     root = customtkinter.CTk()
