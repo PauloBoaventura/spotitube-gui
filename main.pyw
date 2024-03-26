@@ -50,8 +50,8 @@ def youtube(root):
     def yt_to_mp3(YouTube_url):
         pass
     youtube_window = customtkinter.CTkToplevel(root)
-    youtube_window.minsize(480, 270)
-    youtube_window.maxsize(480, 270)
+    youtube_window.minsize(480, 220)
+    youtube_window.maxsize(480, 220)
     try:
         youtube_window.after(300, lambda: youtube_window.iconbitmap(f"{cwd}\\images\\youtube.ico"))
     except:
@@ -61,17 +61,15 @@ def youtube(root):
     youtube_window.update()
     window_width = youtube_window.winfo_width()
 
-    top_frame = customtkinter.CTkFrame(master=youtube_window, width=window_width, height=40, fg_color="#242424")
+    top_frame = customtkinter.CTkFrame(master=youtube_window, width=window_width, height=30, fg_color="#242424")
     top_frame.pack(padx=10, pady=10)
 
-    YouTube_url = customtkinter.CTkEntry(master=youtube_window, placeholder_text="YouTube URL:", width=350)
-    YouTube_url.pack(padx=10, pady=0)
     YouTube_to_mp4_button = customtkinter.CTkButton(master=youtube_window, command=lambda: yt_to_mp4(), text="YouTube to mp4", width=350)
-    YouTube_to_mp4_button.pack(padx=10, pady=10)
+    YouTube_to_mp4_button.pack(padx=10, pady=0)
     YouTube_to_mp3_button = customtkinter.CTkButton(master=youtube_window, command=lambda: yt_to_mp3(), text="YouTube to mp3", width=350)
-    YouTube_to_mp3_button.pack(padx=10, pady=0)
+    YouTube_to_mp3_button.pack(padx=10, pady=10)
     back_button = customtkinter.CTkButton(master=youtube_window, command=youtube_window.destroy, text="Back", width=350)
-    back_button.pack(padx=10, pady=10)
+    back_button.pack(padx=10, pady=0)
 
 def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
     def sp_song(spotify_url):
@@ -161,8 +159,8 @@ def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
                     CTkMessagebox(title="error", message=f"{e}", icon="cancel")
 
     spotify_window = customtkinter.CTkToplevel(root)
-    spotify_window.minsize(480, 270)
-    spotify_window.maxsize(480, 270)
+    spotify_window.minsize(480, 330)
+    spotify_window.maxsize(480, 330)
     try:
         spotify_window.after(300, lambda: spotify_window.iconbitmap(f"{cwd}\\images\\spotify.ico"))
     except:
@@ -172,7 +170,7 @@ def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
     spotify_window.update()
     window_width = spotify_window.winfo_width()
 
-    top_frame = customtkinter.CTkFrame(master=spotify_window, width=window_width, height=5, fg_color="#242424")
+    top_frame = customtkinter.CTkFrame(master=spotify_window, width=window_width, height=30, fg_color="#242424")
     top_frame.pack(padx=10, pady=10)
 
     spotify_url = customtkinter.CTkEntry(master=spotify_window, placeholder_text="Spotify URL:", width=350)
@@ -206,7 +204,7 @@ def main():
 
     top_frame = customtkinter.CTkFrame(master=root, width=window_width, height=50, fg_color="#242424")
     top_frame.pack(padx=10, pady=10)
-    customtkinter.CTkLabel(master=top_frame, text="spotitube GUI witten by github.com/3022-2/", text_color="grey",font=("", 20), width=window_width, height=50).pack()
+    customtkinter.CTkLabel(master=top_frame, text="SPOTITUBE GUI", text_color="grey",font=("", 20), width=window_width, height=50).pack()
     
     #buttons
     youtube_button = customtkinter.CTkButton(master=root, command=lambda: youtube(root), text="YouTube", width=350)
