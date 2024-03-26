@@ -2,6 +2,7 @@ from CTkMessagebox import CTkMessagebox
 from colorama import Fore, init
 
 import customtkinter
+import subprocess
 import webbrowser
 import time
 import os
@@ -44,7 +45,55 @@ spotify_playlists_folder = f"{cwd}\\content\\spotify\\playlists"
 def youtube():
     pass
 
-def spotify(root):
+def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
+    def sp_song(spotify_url):
+        url = str(spotify_url.get())
+        try:
+            if "track" in url:
+                os.chdir(spotify_songs_folder)
+                subprocess.run(['spotdl', url], check=True)
+                CTkMessagebox(message="Song successfully downloaded to content/spotify/songs", icon="check", option_1="OK")
+            elif "album" in url:
+                CTkMessagebox(title="Error", message=f"{url} seems to be an album", icon="cancel")
+            elif "playlist" in url:
+                CTkMessagebox(title="Error", message=f"{url} seems to be a playlist", icon="cancel")
+            else:
+                CTkMessagebox(title="Error", message=f"{url} doesnt seem to be track, album or playlist", icon="cancel")
+        except Exception as e:
+            CTkMessagebox(title="Error", message=f"{e}", icon="cancel") 
+
+    def sp_album(spotify_url):
+        url = str(spotify_url.get())
+        try:
+            if "track" in url:
+                CTkMessagebox(title="Error", message=f"{url} seems to be a track", icon="cancel")
+            elif "album" in url:
+                os.chdir(spotify_albums_folder)
+                subprocess.run(['spotdl', url], check=True)
+                CTkMessagebox(message="Album successfully downloaded to content/spotify/albums", icon="check", option_1="OK")
+            elif "playlist" in url:
+                CTkMessagebox(title="Error", message=f"{url} seems to be a playlist", icon="cancel")
+            else:
+                CTkMessagebox(title="Error", message=f"{url} doesnt seem to be track, album or playlist", icon="cancel")
+        except Exception as e:
+            CTkMessagebox(title="Error", message=f"{e}", icon="cancel") 
+
+    def sp_playlist():
+        url = str(spotify_url.get())
+        try:
+            if "track" in url:
+                CTkMessagebox(title="Error", message=f"{url} seems to be a track", icon="cancel")
+            elif "album" in url:
+                CTkMessagebox(title="Error", message=f"{url} seems to be an album", icon="cancel")
+            elif "playlist" in url:
+                os.chdir(spotify_playlists_folder)
+                subprocess.run(['spotdl', url], check=True)
+                CTkMessagebox(message="Playlust successfully downloaded to content/spotify/playlists", icon="check", option_1="OK")
+            else:
+                CTkMessagebox(title="Error", message=f"{url} doesnt seem to be track, album or playlist", icon="cancel")
+        except Exception as e:
+            CTkMessagebox(title="Error", message=f"{e}", icon="cancel") 
+
     spotify_window = customtkinter.CTkToplevel(root)
     spotify_window.minsize(480, 270)
     spotify_window.maxsize(480, 270)
@@ -54,9 +103,24 @@ def spotify(root):
         print(Fore.YELLOW + "icon.ico not found, continuing")
     spotify_window.title("Spotify")
 
-    back_button = customtkinter.CTkButton(master=spotify_window, command=spotify_window.destroy, text="Back")
-    back_button.pack(padx=10, pady=10)
+    spotify_window.update()
+    window_width = spotify_window.winfo_width()
 
+    top_frame = customtkinter.CTkFrame(master=spotify_window, width=window_width, height=50)
+    top_frame.pack(padx=10, pady=10)
+    customtkinter.CTkLabel(master=top_frame, text="Spotify", text_color="grey",font=("", 20), width=window_width, height=50).pack()
+
+    spotify_url = customtkinter.CTkEntry(master=spotify_window, placeholder_text="Spotify URL:")
+    spotify_url.pack(padx=10, pady=0)
+    spotify_song_button = customtkinter.CTkButton(master=spotify_window, command=lambda: sp_song(spotify_url), text="Song")
+    spotify_song_button.pack(padx=10, pady=10)
+    spotify_album_button = customtkinter.CTkButton(master=spotify_window, command=lambda: sp_album(spotify_url), text="Album")
+    spotify_album_button.pack(padx=10, pady=0)
+    spotify_playlist_button = customtkinter.CTkButton(master=spotify_window, command=lambda: sp_playlist(spotify_url), text="Playlist")
+    spotify_playlist_button.pack(padx=10, pady=10)
+
+    back_button = customtkinter.CTkButton(master=spotify_window, command=spotify_window.destroy, text="Back")
+    back_button.pack()
 
 def main():
     root = customtkinter.CTk()
@@ -73,8 +137,7 @@ def main():
     window_width = root.winfo_width()
 
     top_frame = customtkinter.CTkFrame(master=root, width=window_width, height=50)
-    top_frame.pack(padx=10, pady=20)
-
+    top_frame.pack(padx=10, pady=10)
     customtkinter.CTkLabel(master=top_frame, text="spotitube GUI witten by github.com/3022-2/", text_color="grey",font=("", 20), width=window_width, height=50).pack()
     
     #buttons
@@ -82,6 +145,7 @@ def main():
     youtube_button.pack(padx=10, pady=0)
     spotify_button = customtkinter.CTkButton(master=root, command=lambda: spotify(root), text="Spotify")
     spotify_button.pack(padx=10, pady=10)
+
     github_button = customtkinter.CTkButton(master=root, command=lambda: webbrowser.open("https://github.com/3022-2/spotitube-gui"), text="GitHub")
     github_button.pack(padx=10, pady=0)
     exit_button = customtkinter.CTkButton(master=root, command=lambda: exit(), text="Exit")
