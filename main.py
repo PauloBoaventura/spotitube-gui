@@ -42,8 +42,35 @@ spotify_songs_folder = f"{cwd}\\content\\spotify\\songs"
 spotify_albums_folder = f"{cwd}\\content\\spotify\\albums"
 spotify_playlists_folder = f"{cwd}\\content\\spotify\\playlists"
 
-def youtube():
-    pass
+def youtube(root):
+    def yt_to_mp4(YouTube_url):
+        pass
+    def yt_to_mp3(YouTube_url):
+        pass
+    youtube_window = customtkinter.CTkToplevel(root)
+    youtube_window.minsize(480, 270)
+    youtube_window.maxsize(480, 270)
+    try:
+        youtube_window.after(300, lambda: youtube_window.iconbitmap(icon))
+    except:
+        print(Fore.YELLOW + "icon.ico not found, continuing")
+    youtube_window.title("YouTube")
+
+    youtube_window.update()
+    window_width = youtube_window.winfo_width()
+
+    top_frame = customtkinter.CTkFrame(master=youtube_window, width=window_width, height=50)
+    top_frame.pack(padx=10, pady=10)
+    customtkinter.CTkLabel(master=top_frame, text="YouTube", text_color="grey",font=("", 20), width=window_width, height=50).pack()
+
+    YouTube_url = customtkinter.CTkEntry(master=youtube_window, placeholder_text="YouTube URL:")
+    YouTube_url.pack(padx=10, pady=0)
+    YouTube_to_mp4_button = customtkinter.CTkButton(master=youtube_window, command=lambda: yt_to_mp4(), text="YouTube to mp4")
+    YouTube_to_mp4_button.pack(padx=10, pady=10)
+    YouTube_to_mp3_button = customtkinter.CTkButton(master=youtube_window, command=lambda: yt_to_mp3(), text="YouTube to mp3")
+    YouTube_to_mp3_button.pack(padx=10, pady=0)
+    back_button = customtkinter.CTkButton(master=youtube_window, command=youtube_window.destroy, text="Back")
+    back_button.pack(padx=10, pady=10)
 
 def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
     def sp_song(spotify_url):
@@ -141,7 +168,7 @@ def main():
     customtkinter.CTkLabel(master=top_frame, text="spotitube GUI witten by github.com/3022-2/", text_color="grey",font=("", 20), width=window_width, height=50).pack()
     
     #buttons
-    youtube_button = customtkinter.CTkButton(master=root, command=lambda: youtube(), text="YouTube")
+    youtube_button = customtkinter.CTkButton(master=root, command=lambda: youtube(root), text="YouTube")
     youtube_button.pack(padx=10, pady=0)
     spotify_button = customtkinter.CTkButton(master=root, command=lambda: spotify(root), text="Spotify")
     spotify_button.pack(padx=10, pady=10)
