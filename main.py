@@ -95,9 +95,16 @@ def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
             if "track" in url:
                 CTkMessagebox(title="Error", message=f"{url} seems to be a track", icon="cancel")
             elif "album" in url:
+                factor_url = url.strip("https://open.spotify.com/").replace("/", "-")
+                factor_url = factor_url.replace("=", "-")
+                factor_url = factor_url.replace("?", "-")
                 os.chdir(spotify_albums_folder)
+                time.sleep(0.5)
+                os.mkdir(f"{spotify_albums_folder}\\{factor_url}")
+                time.sleep(0.5)
+                os.chdir(f"{spotify_albums_folder}\\{factor_url}")
                 subprocess.run(['spotdl', url], check=True)
-                CTkMessagebox(message="Album successfully downloaded to content/spotify/albums", icon="check", option_1="OK")
+                CTkMessagebox(message=f"Album successfully downloaded to content/spotify/albums/{factor_url}", icon="check", option_1="OK")
             elif "playlist" in url:
                 CTkMessagebox(title="Error", message=f"{url} seems to be a playlist", icon="cancel")
             else:
@@ -113,9 +120,16 @@ def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
             elif "album" in url:
                 CTkMessagebox(title="Error", message=f"{url} seems to be an album", icon="cancel")
             elif "playlist" in url:
+                factor_url = url.strip("https://open.spotify.com/").replace("/", "-")
+                factor_url = factor_url.replace("=", "-")
+                factor_url = factor_url.replace("?", "-")
                 os.chdir(spotify_playlists_folder)
+                time.sleep(0.5)
+                os.mkdir(f"{spotify_playlists_folder}\\{factor_url}")
+                time.sleep(0.5)
+                os.chdir(f"{spotify_playlists_folder}\\{factor_url}")
                 subprocess.run(['spotdl', url], check=True)
-                CTkMessagebox(message="Playlust successfully downloaded to content/spotify/playlists", icon="check", option_1="OK")
+                CTkMessagebox(message=f"Playlist successfully downloaded to content/spotify/playlists/{factor_url}", icon="check", option_1="OK")
             else:
                 CTkMessagebox(title="Error", message=f"{url} doesnt seem to be track, album or playlist", icon="cancel")
         except Exception as e:
