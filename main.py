@@ -1,4 +1,5 @@
 from colorama import Fore, init
+from CTkMessagebox import CTkMessagebox
 
 import customtkinter
 import os
@@ -29,6 +30,8 @@ except Exception as e:
     print(Fore.RED + e)
 
 #defining vars
+icon = f"{cwd}\\icon.ico" #icon from https://icon-icons.com/
+
 youtube_videos_folder = f"{cwd}\\content\\youtube\\videos"
 youtube_playlists_folder = f"{cwd}\\content\\youtube\\playlists"
 youtube_channels_folder = f"{cwd}\\content\\youtube\\channels"
@@ -46,6 +49,8 @@ def youtube():
 def main():
     root = customtkinter.CTk()
     root.minsize(480, 270)
+    root.title("spotitube")
+    root.iconbitmap(icon)
     root.mainloop()
 
 if __name__ == "__main__":
