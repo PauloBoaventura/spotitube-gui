@@ -42,6 +42,8 @@ spotify_songs_folder = f"{cwd}\\content\\spotify\\songs"
 spotify_albums_folder = f"{cwd}\\content\\spotify\\albums"
 spotify_playlists_folder = f"{cwd}\\content\\spotify\\playlists"
 
+logo_images = f"{cwd}\\images"
+
 def youtube(root):
     def yt_to_mp4(YouTube_url):
         pass
@@ -51,7 +53,7 @@ def youtube(root):
     youtube_window.minsize(480, 270)
     youtube_window.maxsize(480, 270)
     try:
-        youtube_window.after(300, lambda: youtube_window.iconbitmap(icon))
+        youtube_window.after(300, lambda: youtube_window.iconbitmap(f"{cwd}\\images\\youtube.ico"))
     except:
         print(Fore.YELLOW + "icon.ico not found, continuing")
     youtube_window.title("YouTube")
@@ -59,9 +61,8 @@ def youtube(root):
     youtube_window.update()
     window_width = youtube_window.winfo_width()
 
-    top_frame = customtkinter.CTkFrame(master=youtube_window, width=window_width, height=50)
+    top_frame = customtkinter.CTkFrame(master=youtube_window, width=window_width, height=40, fg_color="#242424")
     top_frame.pack(padx=10, pady=10)
-    customtkinter.CTkLabel(master=top_frame, text="YouTube", text_color="grey",font=("", 20), width=window_width, height=50).pack()
 
     YouTube_url = customtkinter.CTkEntry(master=youtube_window, placeholder_text="YouTube URL:", width=350)
     YouTube_url.pack(padx=10, pady=0)
@@ -163,7 +164,7 @@ def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
     spotify_window.minsize(480, 270)
     spotify_window.maxsize(480, 270)
     try:
-        spotify_window.after(300, lambda: spotify_window.iconbitmap(icon))
+        spotify_window.after(300, lambda: spotify_window.iconbitmap(f"{cwd}\\images\\spotify.ico"))
     except:
         print(Fore.YELLOW + "icon.ico not found, continuing")
     spotify_window.title("Spotify")
@@ -171,9 +172,8 @@ def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
     spotify_window.update()
     window_width = spotify_window.winfo_width()
 
-    top_frame = customtkinter.CTkFrame(master=spotify_window, width=window_width, height=50)
+    top_frame = customtkinter.CTkFrame(master=spotify_window, width=window_width, height=5, fg_color="#242424")
     top_frame.pack(padx=10, pady=10)
-    customtkinter.CTkLabel(master=top_frame, text="Spotify", text_color="grey",font=("", 20), width=window_width, height=50).pack()
 
     spotify_url = customtkinter.CTkEntry(master=spotify_window, placeholder_text="Spotify URL:", width=350)
     spotify_url.pack(padx=10, pady=0)
@@ -204,7 +204,7 @@ def main():
     root.update()
     window_width = root.winfo_width()
 
-    top_frame = customtkinter.CTkFrame(master=root, width=window_width, height=50)
+    top_frame = customtkinter.CTkFrame(master=root, width=window_width, height=50, fg_color="#242424")
     top_frame.pack(padx=10, pady=10)
     customtkinter.CTkLabel(master=top_frame, text="spotitube GUI witten by github.com/3022-2/", text_color="grey",font=("", 20), width=window_width, height=50).pack()
     
