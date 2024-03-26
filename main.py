@@ -7,7 +7,7 @@ import time
 import os
 
 cwd = os.getcwd()
-
+customtkinter.set_appearance_mode("dark")
 init(autoreset=True)
 
 #pre code checks
@@ -31,7 +31,7 @@ except Exception as e:
     print(Fore.RED + e)
 
 #defining vars
-icon= f"{cwd}\\icon.ico" #icon from https://icon-icons.com/
+icon = f"{cwd}\\icon.ico" #icon from https://icon-icons.com/
 
 youtube_videos_folder = f"{cwd}\\content\\youtube\\videos"
 youtube_playlists_folder = f"{cwd}\\content\\youtube\\playlists"
@@ -41,14 +41,24 @@ spotify_songs_folder = f"{cwd}\\content\\spotify\\songs"
 spotify_albums_folder = f"{cwd}\\content\\spotify\\albums"
 spotify_playlists_folder = f"{cwd}\\content\\spotify\\playlists"
 
-def spotify():
-    pass
-
 def youtube():
     pass
 
+def spotify(root):
+    spotify_window = customtkinter.CTkToplevel(root)
+    spotify_window.minsize(480, 270)
+    spotify_window.maxsize(480, 270)
+    try:
+        spotify_window.after(300, lambda: spotify_window.iconbitmap(icon))
+    except:
+        print(Fore.YELLOW + "icon.ico not found, continuing")
+    spotify_window.title("Spotify")
+
+    back_button = customtkinter.CTkButton(master=spotify_window, command=spotify_window.destroy, text="Back")
+    back_button.pack(padx=10, pady=10)
+
+
 def main():
-    customtkinter.set_appearance_mode("dark")
     root = customtkinter.CTk()
     root.minsize(480, 270)
     root.maxsize(480, 270)
@@ -56,7 +66,7 @@ def main():
 
     try:
         root.iconbitmap(icon)
-    except Exception as e:
+    except:
         print(Fore.YELLOW + "icon.ico not found, continuing")
         
     root.update()
@@ -65,11 +75,12 @@ def main():
     top_frame = customtkinter.CTkFrame(master=root, width=window_width, height=50)
     top_frame.pack(padx=10, pady=20)
 
-    customtkinter.CTkLabel(master=top_frame, text="spotitube gui witten by github.com/3022-2/", text_color="grey",font=("", 20), width=window_width, height=50).pack()
-
-    youtube_button = customtkinter.CTkButton(master=root, command=lambda: youtube, text="YouTube")
+    customtkinter.CTkLabel(master=top_frame, text="spotitube GUI witten by github.com/3022-2/", text_color="grey",font=("", 20), width=window_width, height=50).pack()
+    
+    #buttons
+    youtube_button = customtkinter.CTkButton(master=root, command=lambda: youtube(), text="YouTube")
     youtube_button.pack(padx=10, pady=0)
-    spotify_button = customtkinter.CTkButton(master=root, command=lambda: spotify, text="Spotify")
+    spotify_button = customtkinter.CTkButton(master=root, command=lambda: spotify(root), text="Spotify")
     spotify_button.pack(padx=10, pady=10)
     github_button = customtkinter.CTkButton(master=root, command=lambda: webbrowser.open("https://github.com/3022-2/spotitube-gui"), text="GitHub")
     github_button.pack(padx=10, pady=0)
