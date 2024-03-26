@@ -1,5 +1,7 @@
 from CTkMessagebox import CTkMessagebox
 from colorama import Fore, init
+from pytube.innertube import _default_clients
+from pytube import YouTube
 
 import customtkinter
 import subprocess
