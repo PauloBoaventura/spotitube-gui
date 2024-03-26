@@ -63,13 +63,13 @@ def youtube(root):
     top_frame.pack(padx=10, pady=10)
     customtkinter.CTkLabel(master=top_frame, text="YouTube", text_color="grey",font=("", 20), width=window_width, height=50).pack()
 
-    YouTube_url = customtkinter.CTkEntry(master=youtube_window, placeholder_text="YouTube URL:")
+    YouTube_url = customtkinter.CTkEntry(master=youtube_window, placeholder_text="YouTube URL:", width=350)
     YouTube_url.pack(padx=10, pady=0)
-    YouTube_to_mp4_button = customtkinter.CTkButton(master=youtube_window, command=lambda: yt_to_mp4(), text="YouTube to mp4")
+    YouTube_to_mp4_button = customtkinter.CTkButton(master=youtube_window, command=lambda: yt_to_mp4(), text="YouTube to mp4", width=350)
     YouTube_to_mp4_button.pack(padx=10, pady=10)
-    YouTube_to_mp3_button = customtkinter.CTkButton(master=youtube_window, command=lambda: yt_to_mp3(), text="YouTube to mp3")
+    YouTube_to_mp3_button = customtkinter.CTkButton(master=youtube_window, command=lambda: yt_to_mp3(), text="YouTube to mp3", width=350)
     YouTube_to_mp3_button.pack(padx=10, pady=0)
-    back_button = customtkinter.CTkButton(master=youtube_window, command=youtube_window.destroy, text="Back")
+    back_button = customtkinter.CTkButton(master=youtube_window, command=youtube_window.destroy, text="Back", width=350)
     back_button.pack(padx=10, pady=10)
 
 def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
@@ -112,7 +112,7 @@ def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
         except Exception as e:
             CTkMessagebox(title="Error", message=f"{e}", icon="cancel") 
 
-    def sp_playlist():
+    def sp_playlist(spotify_url):
         url = str(spotify_url.get())
         try:
             if "track" in url:
@@ -175,19 +175,19 @@ def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
     top_frame.pack(padx=10, pady=10)
     customtkinter.CTkLabel(master=top_frame, text="Spotify", text_color="grey",font=("", 20), width=window_width, height=50).pack()
 
-    spotify_url = customtkinter.CTkEntry(master=spotify_window, placeholder_text="Spotify URL:")
+    spotify_url = customtkinter.CTkEntry(master=spotify_window, placeholder_text="Spotify URL:", width=350)
     spotify_url.pack(padx=10, pady=0)
-    spotify_song_button = customtkinter.CTkButton(master=spotify_window, command=lambda: sp_song(spotify_url), text="Song")
+    spotify_song_button = customtkinter.CTkButton(master=spotify_window, command=lambda: sp_song(spotify_url), text="Song", width=350)
     spotify_song_button.pack(padx=10, pady=10)
-    spotify_album_button = customtkinter.CTkButton(master=spotify_window, command=lambda: sp_album(spotify_url), text="Album")
+    spotify_album_button = customtkinter.CTkButton(master=spotify_window, command=lambda: sp_album(spotify_url), text="Album", width=350)
     spotify_album_button.pack(padx=10, pady=0)
-    spotify_playlist_button = customtkinter.CTkButton(master=spotify_window, command=lambda: sp_playlist(spotify_url), text="Playlist")
+    spotify_playlist_button = customtkinter.CTkButton(master=spotify_window, command=lambda: sp_playlist(spotify_url), text="Playlist", width=350)
     spotify_playlist_button.pack(padx=10, pady=10)
 
-    spotify_from_txt = customtkinter.CTkButton(master=spotify_window, command=lambda: sp_from_txt(), text="Load from spotify_list.txt")
+    spotify_from_txt = customtkinter.CTkButton(master=spotify_window, command=lambda: sp_from_txt(), text="Load from spotify_list.txt", width=350)
     spotify_from_txt.pack(padx=10, pady=0)
 
-    back_button = customtkinter.CTkButton(master=spotify_window, command=spotify_window.destroy, text="Back")
+    back_button = customtkinter.CTkButton(master=spotify_window, command=spotify_window.destroy, text="Back", width=350)
     back_button.pack(padx=10, pady=10)
 
 def main():
@@ -209,14 +209,14 @@ def main():
     customtkinter.CTkLabel(master=top_frame, text="spotitube GUI witten by github.com/3022-2/", text_color="grey",font=("", 20), width=window_width, height=50).pack()
     
     #buttons
-    youtube_button = customtkinter.CTkButton(master=root, command=lambda: youtube(root), text="YouTube")
+    youtube_button = customtkinter.CTkButton(master=root, command=lambda: youtube(root), text="YouTube", width=350)
     youtube_button.pack(padx=10, pady=0)
-    spotify_button = customtkinter.CTkButton(master=root, command=lambda: spotify(root), text="Spotify")
+    spotify_button = customtkinter.CTkButton(master=root, command=lambda: spotify(root), text="Spotify", width=350)
     spotify_button.pack(padx=10, pady=10)
 
-    github_button = customtkinter.CTkButton(master=root, command=lambda: webbrowser.open("https://github.com/3022-2/spotitube-gui"), text="GitHub")
+    github_button = customtkinter.CTkButton(master=root, command=lambda: webbrowser.open("https://github.com/3022-2/spotitube-gui"), text="GitHub", width=350)
     github_button.pack(padx=10, pady=0)
-    exit_button = customtkinter.CTkButton(master=root, command=lambda: exit(), text="Exit")
+    exit_button = customtkinter.CTkButton(master=root, command=lambda: exit(), text="Exit", width=350)
     exit_button.pack(padx=10, pady=10)
 
     root.mainloop()
