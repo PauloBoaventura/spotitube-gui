@@ -12,6 +12,7 @@ import os
 cwd = os.getcwd()
 customtkinter.set_appearance_mode("dark")
 init(autoreset=True)
+_default_clients["ANDROID_MUSIC"] = _default_clients["ANDROID"]
 
 #pre code checks
 try:
@@ -20,8 +21,15 @@ try:
         time.sleep(1)
         os.mkdir(f"{cwd}\\content\\youtube")
         os.mkdir(f"{cwd}\\content\\youtube\\videos")
+        os.mkdir(f"{cwd}\\content\\youtube\\videos\\mp3")
+        os.mkdir(f"{cwd}\\content\\youtube\\videos\\mp4")
         os.mkdir(f"{cwd}\\content\\youtube\\playlists")
+        os.mkdir(f"{cwd}\\content\\youtube\\playlists\\mp3")
+        os.mkdir(f"{cwd}\\content\\youtube\\playlists\\mp4")
         os.mkdir(f"{cwd}\\content\\youtube\\channels")
+        os.mkdir(f"{cwd}\\content\\youtube\\channels")
+        os.mkdir(f"{cwd}\\content\\youtube\\channels\\mp3")
+        os.mkdir(f"{cwd}\\content\\youtube\\channels\\mp4")
         os.mkdir(f"{cwd}\\content\\spotify")
         os.mkdir(f"{cwd}\\content\\spotify\\songs")
         os.mkdir(f"{cwd}\\content\\spotify\\albums")
@@ -36,9 +44,12 @@ except Exception as e:
 #defining vars
 icon = f"{cwd}\\icon.ico" #icon from https://icon-icons.com/
 
-youtube_videos_folder = f"{cwd}\\content\\youtube\\videos"
-youtube_playlists_folder = f"{cwd}\\content\\youtube\\playlists"
-youtube_channels_folder = f"{cwd}\\content\\youtube\\channels"
+youtube_videos_folder_mp3 = f"{cwd}\\content\\youtube\\videos\\mp3"
+youtube_videos_folder_mp4 = f"{cwd}\\content\\youtube\\videos\\mp4"
+youtube_playlists_folder_mp3 = f"{cwd}\\content\\youtube\\playlists\\mp3"
+youtube_playlists_folder_mp4 = f"{cwd}\\content\\youtube\\videos\\mp4"
+youtube_channels_folder_mp3 = f"{cwd}\\content\\youtube\\channels\\mp3"
+youtube_channels_folder_mp4 = f"{cwd}\\content\\youtube\\channels\\mp4"
 
 spotify_songs_folder = f"{cwd}\\content\\spotify\\songs"
 spotify_albums_folder = f"{cwd}\\content\\spotify\\albums"
@@ -47,10 +58,53 @@ spotify_playlists_folder = f"{cwd}\\content\\spotify\\playlists"
 logo_images = f"{cwd}\\images"
 
 def youtube(root):
-    def yt_to_mp4(YouTube_url):
+    def yt_to_mp4(root):
         pass
-    def yt_to_mp3(YouTube_url):
-        pass
+    def yt_to_mp3(root):
+        def yt_mp3_video(youtube_url):
+            yt = YouTube(str(youtube_url.get()))
+            video = yt.streams.filter(only_audio=True).first() 
+            out_file = video.download(output_path=youtube_videos_folder_mp3) 
+            base, ext = os.path.splitext(out_file) 
+            new_file = base + '.mp3'
+            os.rename(out_file, new_file)
+            CTkMessagebox(message="Song successfully downloaded to content/youtube/videos/mp3", icon="check", option_1="OK")
+        def yt_mp3_playlist(youtube_url):
+            pass
+        def yt_mp3_channel(youtube_url):
+            pass
+        def yt_from_txt():
+            pass
+
+        ytmp3_window = customtkinter.CTkToplevel(root)
+        ytmp3_window.minsize(480, 330)
+        ytmp3_window.maxsize(480, 330)
+        try:
+            ytmp3_window.after(300, lambda: ytmp3_window.iconbitmap(f"{cwd}\\images\\youtube.ico"))
+        except:
+            print(Fore.YELLOW + "icon.ico not found, continuing")
+        ytmp3_window.title("YouTube to mp3")
+
+        ytmp3_window.update()
+        window_width = ytmp3_window.winfo_width()
+
+        top_frame = customtkinter.CTkFrame(master=ytmp3_window, width=window_width, height=30, fg_color="#242424")
+        top_frame.pack(padx=10, pady=10)
+
+        youtube_url = customtkinter.CTkEntry(master=ytmp3_window, placeholder_text="YouTube URL:", width=350)
+        youtube_url.pack(padx=10, pady=0)
+        youtube_video_button = customtkinter.CTkButton(master=ytmp3_window, command=lambda: yt_mp3_video(youtube_url), text="Video", width=350)
+        youtube_video_button.pack(padx=10, pady=10)
+        youtube_playlist_button = customtkinter.CTkButton(master=ytmp3_window, command=lambda: yt_mp3_playlist(youtube_url), text="Playlist", width=350)
+        youtube_playlist_button.pack(padx=10, pady=0)
+        youtube_channel_button = customtkinter.CTkButton(master=ytmp3_window, command=lambda: yt_mp3_channel(youtube_url), text="Channel", width=350)
+        youtube_channel_button.pack(padx=10, pady=10)
+
+        spotify_from_txt = customtkinter.CTkButton(master=ytmp3_window, command=lambda: yt_from_txt(), text="Load from youtube_list.txt", width=350)
+        spotify_from_txt.pack(padx=10, pady=0)
+
+        back_button = customtkinter.CTkButton(master=ytmp3_window, command=ytmp3_window.destroy, text="Back", width=350)
+        back_button.pack(padx=10, pady=10)
     youtube_window = customtkinter.CTkToplevel(root)
     youtube_window.minsize(480, 220)
     youtube_window.maxsize(480, 220)
@@ -66,9 +120,9 @@ def youtube(root):
     top_frame = customtkinter.CTkFrame(master=youtube_window, width=window_width, height=30, fg_color="#242424")
     top_frame.pack(padx=10, pady=10)
 
-    YouTube_to_mp4_button = customtkinter.CTkButton(master=youtube_window, command=lambda: yt_to_mp4(), text="YouTube to mp4", width=350)
+    YouTube_to_mp4_button = customtkinter.CTkButton(master=youtube_window, command=lambda: yt_to_mp4(root), text="YouTube to mp4", width=350)
     YouTube_to_mp4_button.pack(padx=10, pady=0)
-    YouTube_to_mp3_button = customtkinter.CTkButton(master=youtube_window, command=lambda: yt_to_mp3(), text="YouTube to mp3", width=350)
+    YouTube_to_mp3_button = customtkinter.CTkButton(master=youtube_window, command=lambda: yt_to_mp3(root), text="YouTube to mp3", width=350)
     YouTube_to_mp3_button.pack(padx=10, pady=10)
     back_button = customtkinter.CTkButton(master=youtube_window, command=youtube_window.destroy, text="Back", width=350)
     back_button.pack(padx=10, pady=0)
