@@ -27,7 +27,6 @@ try:
         os.mkdir(f"{cwd}\\content\\youtube\\playlists\\mp3")
         os.mkdir(f"{cwd}\\content\\youtube\\playlists\\mp4")
         os.mkdir(f"{cwd}\\content\\youtube\\channels")
-        os.mkdir(f"{cwd}\\content\\youtube\\channels")
         os.mkdir(f"{cwd}\\content\\youtube\\channels\\mp3")
         os.mkdir(f"{cwd}\\content\\youtube\\channels\\mp4")
         os.mkdir(f"{cwd}\\content\\spotify")
