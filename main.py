@@ -12,7 +12,7 @@ import os
 cwd = os.getcwd()
 customtkinter.set_appearance_mode("dark")
 init(autoreset=True)
-_default_clients["ANDROID_MUSIC"] = _default_clients["ANDROID"]
+#_default_clients["ANDROID_MUSIC"] = _default_clients["ANDROID"]
 
 #pre code checks
 try:
@@ -61,13 +61,13 @@ def youtube(root):
         pass
     def yt_to_mp3(root):
         def yt_mp3_video(youtube_url):
-            yt = YouTube(str(youtube_url.get()))
-            video = yt.streams.filter(only_audio=True).first() 
-            out_file = video.download(output_path=youtube_videos_folder_mp3) 
-            base, ext = os.path.splitext(out_file) 
-            new_file = base + '.mp3'
-            os.rename(out_file, new_file)
-            CTkMessagebox(message="Song successfully downloaded to content/youtube/videos/mp3", icon="check", option_1="OK")
+            try:
+                url = str(youtube_url.get()).strip("")
+                yt = YouTube(url)
+                date = yt.publish_date()
+                print(date)
+            except Exception as e:
+                CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
         def yt_mp3_playlist(youtube_url):
             pass
         def yt_mp3_channel(youtube_url):
