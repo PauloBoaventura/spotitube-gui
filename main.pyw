@@ -1,15 +1,20 @@
+from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_audio
 from CTkMessagebox import CTkMessagebox
 from colorama import Fore, init
+from pytube import YouTube, Playlist, Channel
 
 import customtkinter
 import subprocess
 import webbrowser
 import time
+import sys
 import os
+import re 
 
 cwd = os.getcwd()
 customtkinter.set_appearance_mode("dark")
 init(autoreset=True)
+#_default_clients["ANDROID_MUSIC"] = _default_clients["ANDROID"]
 
 #pre code checks
 try:
@@ -18,8 +23,14 @@ try:
         time.sleep(1)
         os.mkdir(f"{cwd}\\content\\youtube")
         os.mkdir(f"{cwd}\\content\\youtube\\videos")
+        os.mkdir(f"{cwd}\\content\\youtube\\videos\\mp3")
+        os.mkdir(f"{cwd}\\content\\youtube\\videos\\mp4")
         os.mkdir(f"{cwd}\\content\\youtube\\playlists")
+        os.mkdir(f"{cwd}\\content\\youtube\\playlists\\mp3")
+        os.mkdir(f"{cwd}\\content\\youtube\\playlists\\mp4")
         os.mkdir(f"{cwd}\\content\\youtube\\channels")
+        os.mkdir(f"{cwd}\\content\\youtube\\channels\\mp3")
+        os.mkdir(f"{cwd}\\content\\youtube\\channels\\mp4")
         os.mkdir(f"{cwd}\\content\\spotify")
         os.mkdir(f"{cwd}\\content\\spotify\\songs")
         os.mkdir(f"{cwd}\\content\\spotify\\albums")
@@ -34,9 +45,12 @@ except Exception as e:
 #defining vars
 icon = f"{cwd}\\icon.ico" #icon from https://icon-icons.com/
 
-youtube_videos_folder = f"{cwd}\\content\\youtube\\videos"
-youtube_playlists_folder = f"{cwd}\\content\\youtube\\playlists"
-youtube_channels_folder = f"{cwd}\\content\\youtube\\channels"
+youtube_videos_folder_mp3 = f"{cwd}\\content\\youtube\\videos\\mp3"
+youtube_videos_folder_mp4 = f"{cwd}\\content\\youtube\\videos\\mp4"
+youtube_playlists_folder_mp3 = f"{cwd}\\content\\youtube\\playlists\\mp3"
+youtube_playlists_folder_mp4 = f"{cwd}\\content\\youtube\\videos\\mp4"
+youtube_channels_folder_mp3 = f"{cwd}\\content\\youtube\\channels\\mp3"
+youtube_channels_folder_mp4 = f"{cwd}\\content\\youtube\\channels\\mp4"
 
 spotify_songs_folder = f"{cwd}\\content\\spotify\\songs"
 spotify_albums_folder = f"{cwd}\\content\\spotify\\albums"
@@ -44,16 +58,126 @@ spotify_playlists_folder = f"{cwd}\\content\\spotify\\playlists"
 
 logo_images = f"{cwd}\\images"
 
+def sanitize_filename(filename):
+    illegal_chars = r'[\\/:"*?=<>|]' 
+    return re.sub(illegal_chars, "-", filename)
+
 def youtube(root):
-    def yt_to_mp4(YouTube_url):
+    def yt_to_mp4(root):
         pass
-    def yt_to_mp3(YouTube_url):
-        pass
+    def yt_to_mp3(root):
+        def yt_mp3_video(youtube_url):
+            try:
+                url = str(youtube_url.get()).strip("")
+                yt = YouTube(url)
+                title = yt.title
+
+                try:
+                    title = sanitize_filename(title)
+                    output_path = f"{youtube_videos_folder_mp3}\\{title}"
+                except Exception as e:
+                    CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
+
+                audio_stream = yt.streams.filter(only_audio=True).first()
+                down = audio_stream.download(output_path=output_path)
+
+                base, extension = os.path.splitext(down)
+                new_file = base + '.mp3'
+                original_stdout = sys.stdout
+                sys.stdout = open(os.devnull, 'w')
+
+                ffmpeg_extract_audio(down, new_file)
+                os.remove(down)
+                sys.stdout = original_stdout
+                CTkMessagebox(message=f"{title} successfully downloaded to {output_path}", icon="check", option_1="OK")
+            except Exception as e:
+                CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
+        def yt_mp3_playlist(youtube_url):
+            try:
+                url = str(youtube_url.get()).strip("")
+                playlist = Playlist(url)
+
+                try:
+                    title = sanitize_filename(playlist.title)
+                    output_path = f"{youtube_playlists_folder_mp3}\\{title}"
+                except Exception as e:
+                    CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
+
+                try:
+                    for video_url in playlist.video_urls:
+                        yt = YouTube(video_url)
+                        audio_stream = yt.streams.filter(only_audio=True).first()
+                        down = audio_stream.download(output_path=output_path)
+                        base, extension = os.path.splitext(down)
+                        new_file = base + '.mp3'
+                        original_stdout = sys.stdout
+                        sys.stdout = open(os.devnull, 'w')
+
+                        ffmpeg_extract_audio(down, new_file)
+                        os.remove(down)
+                        sys.stdout = original_stdout
+                    CTkMessagebox(message=f"{title} successfully downloaded to {output_path}", icon="check", option_1="OK")
+                except Exception as e:
+                    CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
+            except Exception as e:
+                CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
+        def yt_mp3_channel(youtube_url):
+            try:
+                url = str(youtube_url.get()).strip("")
+                channel = Channel(url)
+                
+                try:
+                    title = sanitize_filename(channel.channel_name)
+                    output_path = f"{youtube_channels_folder_mp3}\\{title}"
+                except Exception as e:
+                    CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
+                
+                try:
+                    for video_url in enumerate(channel.videos_url, start=1):
+                        print(video_url)
+                except Exception as e:
+                    CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
+            except Exception as e:
+                CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
+        def yt_mp3_from_txt():
+            CTkMessagebox(title="uncomleted code - this wont work", message=f"{e}", icon="cancel")
+
+        ytmp3_window = customtkinter.CTkToplevel(root)
+        ytmp3_window.minsize(480, 330)
+        ytmp3_window.maxsize(480, 330)
+        try:
+            ytmp3_window.after(300, lambda: ytmp3_window.iconbitmap(f"{cwd}\\images\\youtube.ico"))
+            ytmp3_window.after(300, lambda: ytmp3_window.lift())
+        except:
+            print(Fore.YELLOW + "icon.ico not found, continuing")
+        ytmp3_window.title("YouTube to mp3")
+
+        ytmp3_window.update()
+        window_width = ytmp3_window.winfo_width()
+
+        top_frame = customtkinter.CTkFrame(master=ytmp3_window, width=window_width, height=30, fg_color="#242424")
+        top_frame.pack(padx=10, pady=10)
+
+        youtube_url = customtkinter.CTkEntry(master=ytmp3_window, placeholder_text="YouTube URL:", width=350)
+        youtube_url.pack(padx=10, pady=0)
+        youtube_video_button = customtkinter.CTkButton(master=ytmp3_window, command=lambda: yt_mp3_video(youtube_url), text="Video", width=350)
+        youtube_video_button.pack(padx=10, pady=10)
+        youtube_playlist_button = customtkinter.CTkButton(master=ytmp3_window, command=lambda: yt_mp3_playlist(youtube_url), text="Playlist", width=350)
+        youtube_playlist_button.pack(padx=10, pady=0)
+        youtube_channel_button = customtkinter.CTkButton(master=ytmp3_window, command=lambda: CTkMessagebox(title="uncomplete code - this isnt working", message=f"{e}", icon="cancel"), text="Channel", width=350)
+        youtube_channel_button.pack(padx=10, pady=10)
+
+        spotify_from_txt = customtkinter.CTkButton(master=ytmp3_window, command=lambda: yt_mp3_from_txt(), text="Load from youtube_list.txt", width=350)
+        spotify_from_txt.pack(padx=10, pady=0)
+
+        back_button = customtkinter.CTkButton(master=ytmp3_window, command=ytmp3_window.destroy, text="Back", width=350)
+        back_button.pack(padx=10, pady=10)
     youtube_window = customtkinter.CTkToplevel(root)
     youtube_window.minsize(480, 220)
     youtube_window.maxsize(480, 220)
     try:
         youtube_window.after(300, lambda: youtube_window.iconbitmap(f"{cwd}\\images\\youtube.ico"))
+        youtube_window.after(300, lambda: youtube_window.lift())
     except:
         print(Fore.YELLOW + "icon.ico not found, continuing")
     youtube_window.title("YouTube")
@@ -64,9 +188,9 @@ def youtube(root):
     top_frame = customtkinter.CTkFrame(master=youtube_window, width=window_width, height=30, fg_color="#242424")
     top_frame.pack(padx=10, pady=10)
 
-    YouTube_to_mp4_button = customtkinter.CTkButton(master=youtube_window, command=lambda: yt_to_mp4(), text="YouTube to mp4", width=350)
+    YouTube_to_mp4_button = customtkinter.CTkButton(master=youtube_window, command=lambda: yt_to_mp4(root), text="YouTube to mp4", width=350)
     YouTube_to_mp4_button.pack(padx=10, pady=0)
-    YouTube_to_mp3_button = customtkinter.CTkButton(master=youtube_window, command=lambda: yt_to_mp3(), text="YouTube to mp3", width=350)
+    YouTube_to_mp3_button = customtkinter.CTkButton(master=youtube_window, command=lambda: yt_to_mp3(root), text="YouTube to mp3", width=350)
     YouTube_to_mp3_button.pack(padx=10, pady=10)
     back_button = customtkinter.CTkButton(master=youtube_window, command=youtube_window.destroy, text="Back", width=350)
     back_button.pack(padx=10, pady=0)
@@ -163,6 +287,7 @@ def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
     spotify_window.maxsize(480, 330)
     try:
         spotify_window.after(300, lambda: spotify_window.iconbitmap(f"{cwd}\\images\\spotify.ico"))
+        spotify_window.after(300, lambda: spotify_window.lift())
     except:
         print(Fore.YELLOW + "icon.ico not found, continuing")
     spotify_window.title("Spotify")
@@ -186,8 +311,7 @@ def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
     spotify_from_txt.pack(padx=10, pady=0)
 
     back_button = customtkinter.CTkButton(master=spotify_window, command=spotify_window.destroy, text="Back", width=350)
-    back_button.pack(padx=10, pady=10)
-
+    back_button.pack(padx=10, pady=10)  
 def main():
     root = customtkinter.CTk()
     root.minsize(480, 270)
