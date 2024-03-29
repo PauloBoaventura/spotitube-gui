@@ -98,17 +98,21 @@ def youtube(root):
                 url = str(youtube_url.get()).strip("")
                 playlist = Playlist(url)
 
-                try:
-                    title = sanitize_filename(playlist.title)
-                    output_path = f"{youtube_playlists_folder_mp3}\\{title}"
-                except Exception as e:
-                    CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
+                
 
                 try:
                     for video_url in playlist.video_urls:
                         yt = YouTube(video_url)
+
+                        try:
+                            title = sanitize_filename(playlist.title)
+                            video_title = sanitize_filename(yt.title)
+                            output_path = f"{youtube_playlists_folder_mp3}\\{title}"
+                        except Exception as e:
+                            CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
+
                         audio_stream = yt.streams.filter(only_audio=True).first()
-                        down = audio_stream.download(output_path=output_path)
+                        down = audio_stream.download(output_path=output_path, filename=video_title)
                         base, extension = os.path.splitext(down)
                         new_file = base + '.mp3'
                         original_stdout = sys.stdout
