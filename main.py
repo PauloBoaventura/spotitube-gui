@@ -71,10 +71,9 @@ def youtube(root):
             try:
                 url = str(youtube_url.get()).strip("")
                 yt = YouTube(url)
-                title = yt.title
 
                 try:
-                    title = sanitize_filename(title)
+                    title = sanitize_filename(yt.title)
                     output_path = f"{youtube_videos_folder_mp3}\\{title}"
                 except Exception as e:
                     CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
@@ -97,8 +96,6 @@ def youtube(root):
             try:
                 url = str(youtube_url.get()).strip("")
                 playlist = Playlist(url)
-
-                
 
                 try:
                     for video_url in playlist.video_urls:
