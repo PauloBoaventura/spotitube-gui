@@ -4,4 +4,5 @@ CTkMessagebox==2.5
 customtkinter==5.2.2
 moviepy==1.0.3
 pytube==15.0.0
+pytubefix==2.3.2
 spotdl
