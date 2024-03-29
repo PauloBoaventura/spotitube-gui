@@ -169,7 +169,7 @@ def youtube(root):
             except Exception as e:
                 CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
         def yt_mp3_from_txt():
-            CTkMessagebox(title="uncomleted code - this wont work", message=f"{e}", icon="cancel")
+            CTkMessagebox(title="Error", message="uncomleted code - this wont work", icon="cancel")
 
         ytmp3_window = customtkinter.CTkToplevel(root)
         ytmp3_window.minsize(480, 330)
