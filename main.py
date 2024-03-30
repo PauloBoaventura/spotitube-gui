@@ -166,7 +166,18 @@ def youtube(root):
             except Exception as e:
                 CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
         def yt_mp3_from_txt():
-            with open()
+            with open(f"{cwd}\\youtube_list.txt", "r") as file:
+                file = file.readlines()
+                for line in file:
+                    url = line.strip()
+                    try:
+                        if "you can add youtube VIDEO links to download from txt - remove the links below and add what you want AS LONG AS IN THE RIGHT FORMAT" in url:
+                            pass
+                        else:
+                            yt = YouTube(url)
+                            print(yt.title)
+                    except Exception as e:
+                        CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
         ytmp3_window = customtkinter.CTkToplevel(root)
         ytmp3_window.minsize(480, 330)
         ytmp3_window.maxsize(480, 330)
