@@ -166,8 +166,7 @@ def youtube(root):
             except Exception as e:
                 CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
         def yt_mp3_from_txt():
-            CTkMessagebox(title="Error", message="uncomleted code - this wont work", icon="cancel")
-
+            with open()
         ytmp3_window = customtkinter.CTkToplevel(root)
         ytmp3_window.minsize(480, 330)
         ytmp3_window.maxsize(480, 330)
@@ -289,7 +288,7 @@ def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
             for line in file:
                 url = line.strip()
                 try:
-                    if "you can add spotify SONG links to download from txt - remove the links below and add like that" in url:
+                    if "you can add spotify SONG links to download from txt - remove the links below and add what you want AS LONG AS RIGHT FORMAT" in url:
                         pass
                     else:
                         try:

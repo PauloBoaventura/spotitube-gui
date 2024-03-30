@@ -288,7 +288,7 @@ def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
             for line in file:
                 url = line.strip()
                 try:
-                    if "you can add spotify SONG links to download from txt - remove the links below and add like that" in url:
+                    if "you can add spotify SONG links to download from txt - remove the links below and add what you want AS LONG AS RIGHT FORMAT" in url:
                         pass
                     else:
                         try:
