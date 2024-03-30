@@ -79,7 +79,7 @@ def youtube(root):
                     CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
 
                 audio_stream = yt.streams.filter(only_audio=True).first()
-                down = audio_stream.download(output_path=output_path)
+                down = audio_stream.download(output_path=output_path, filename=title)
 
                 base, extension = os.path.splitext(down)
                 new_file = base + '.mp3'
@@ -169,13 +169,32 @@ def youtube(root):
             with open(f"{cwd}\\youtube_list.txt", "r") as file:
                 file = file.readlines()
                 for line in file:
-                    url = line.strip()
+                    url = line.strip("")
                     try:
                         if "you can add youtube VIDEO links to download from txt - remove the links below and add what you want AS LONG AS IN THE RIGHT FORMAT" in url:
                             pass
                         else:
                             yt = YouTube(url)
-                            print(yt.title)
+
+                            try:
+                                title = sanitize_filename(yt.title)
+                                output_path = f"{youtube_videos_folder_mp3}\\{title}"
+                            except Exception as e:
+                                CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
+                            
+                            audio_stream = yt.streams.filter(only_audio=True).first()
+                            down = audio_stream.download(output_path=output_path, filename=title)
+
+                            base, extension = os.path.splitext(down)
+                            new_file = base + '.mp3'
+                            original_stdout = sys.stdout
+                            sys.stdout = open(os.devnull, 'w')
+
+                            ffmpeg_extract_audio(down, new_file)
+                            os.remove(down)
+                            sys.stdout = original_stdout
+                        CTkMessagebox(message=f"{title} successfully downloaded to {output_path}", icon="check", option_1="OK")
+
                     except Exception as e:
                         CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
         ytmp3_window = customtkinter.CTkToplevel(root)
@@ -297,7 +316,7 @@ def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
         with open(f"{cwd}\\spotify_list.txt", "r") as file:
             file = file.readlines()
             for line in file:
-                url = line.strip()
+                url = line.strip("")
                 try:
                     if "you can add spotify SONG links to download from txt - remove the links below and add what you want AS LONG AS RIGHT FORMAT" in url:
                         pass
