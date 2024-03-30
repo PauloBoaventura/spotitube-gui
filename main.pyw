@@ -69,6 +69,19 @@ def youtube(root):
     def yt_to_mp3(root):
         def yt_mp3_video(youtube_url):
             try:
+                progress_box = customtkinter.CTkToplevel(root)
+                progress_box.title("Download Progress")
+                progress_box.resizable(False, False)
+                try:
+                    progress_box.after(300, lambda: progress_box.iconbitmap(f"{cwd}\\images\\youtube.ico"))
+                    progress_box.after(300, lambda: progress_box.lift())
+                except:
+                    pass
+                customtkinter.CTkLabel(master=progress_box, text=f"Downloading").pack()
+                progress = customtkinter.CTkProgressBar(master=progress_box, width=int("300"), mode="indeterminate")
+                progress.pack()
+                progress.start()
+
                 url = str(youtube_url.get()).strip("")
                 yt = YouTube(url)
 
@@ -89,11 +102,27 @@ def youtube(root):
                 ffmpeg_extract_audio(down, new_file)
                 os.remove(down)
                 sys.stdout = original_stdout
+
+                progress.stop()
+                progress_box.destroy()
                 CTkMessagebox(message=f"{title} successfully downloaded to {output_path}", icon="check", option_1="OK")
             except Exception as e:
                 CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
         def yt_mp3_playlist(youtube_url):
             try:
+                progress_box = customtkinter.CTkToplevel(root)
+                progress_box.title("Download Progress")
+                progress_box.resizable(False, False)
+                try:
+                    progress_box.after(300, lambda: progress_box.iconbitmap(f"{cwd}\\images\\youtube.ico"))
+                    progress_box.after(300, lambda: progress_box.lift())
+                except:
+                    pass
+                customtkinter.CTkLabel(master=progress_box, text=f"Downloading").pack()
+                progress = customtkinter.CTkProgressBar(master=progress_box, width=int("300"), mode="indeterminate")
+                progress.pack()
+                progress.start()
+
                 url = str(youtube_url.get()).strip("")
                 playlist = Playlist(url)
 
@@ -121,6 +150,8 @@ def youtube(root):
                     CTkMessagebox(message=f"{title} successfully downloaded to {output_path}", icon="check", option_1="OK")
                 except Exception as e:
                     CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
+                progress.stop()
+                progress_box.destroy()
             except Exception as e:
                 CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
         def yt_mp3_channel(youtube_url):
@@ -132,8 +163,21 @@ def youtube(root):
                 elif "/channel/" in url:
                     channel = ChannelFIX(url)
                     try:
+                        progress_box = customtkinter.CTkToplevel(root)
+                        progress_box.title("Download Progress")
+                        progress_box.resizable(False, False)
+                        try:
+                            progress_box.after(300, lambda: progress_box.iconbitmap(f"{cwd}\\images\\youtube.ico"))
+                            progress_box.after(300, lambda: progress_box.lift())
+                        except:
+                            pass
+                        customtkinter.CTkLabel(master=progress_box, text=f"Downloading").pack()
+                        progress = customtkinter.CTkProgressBar(master=progress_box, width=int("300"), mode="indeterminate")
+                        progress.pack()
+                        progress.start()
                         for url in channel.video_urls:
                             try:
+
                                 url = str(url).strip("<pytubefix.__main__.YouTube object: videoId=")
                                 url = url.strip(">")
                                 url = f"https://youtube.com/watch/{url}"
@@ -157,7 +201,8 @@ def youtube(root):
                                 sys.stdout = original_stdout
                             except Exception as e:
                                 CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
-
+                        progress.stop()
+                        progress_box.destroy()
                         CTkMessagebox(message=f"{title} successfully downloaded to {output_path}", icon="check", option_1="OK")
                     except Exception as e:
                         CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
@@ -168,6 +213,18 @@ def youtube(root):
         def yt_mp3_from_txt():
             with open(f"{cwd}\\youtube_list.txt", "r") as file:
                 file = file.readlines()
+                progress_box = customtkinter.CTkToplevel(root)
+                progress_box.title("Download Progress")
+                progress_box.resizable(False, False)
+                try:
+                    progress_box.after(300, lambda: progress_box.iconbitmap(f"{cwd}\\images\\youtube.ico"))
+                    progress_box.after(300, lambda: progress_box.lift())
+                except:
+                    pass
+                customtkinter.CTkLabel(master=progress_box, text=f"Downloading").pack()
+                progress = customtkinter.CTkProgressBar(master=progress_box, width=int("300"), mode="indeterminate")
+                progress.pack()
+                progress.start()
                 for line in file:
                     url = line.strip("")
                     try:
@@ -193,10 +250,14 @@ def youtube(root):
                             ffmpeg_extract_audio(down, new_file)
                             os.remove(down)
                             sys.stdout = original_stdout
-                        CTkMessagebox(message=f"{title} successfully downloaded to {output_path}", icon="check", option_1="OK")
 
+                            progress.stop()
+                            progress_box.destroy()
+                        CTkMessagebox(message=f"{title} successfully downloaded to {output_path}", icon="check", option_1="OK")
                     except Exception as e:
                         CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
+                progress.stop()
+                progress_box.destroy()
         ytmp3_window = customtkinter.CTkToplevel(root)
         ytmp3_window.minsize(480, 330)
         ytmp3_window.maxsize(480, 330)
