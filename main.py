@@ -7,6 +7,7 @@ from colorama import Fore, init
 import customtkinter
 import subprocess
 import webbrowser
+import threading
 import time
 import sys
 import os
@@ -15,7 +16,6 @@ import re
 cwd = os.getcwd()
 customtkinter.set_appearance_mode("dark")
 init(autoreset=True)
-#_default_clients["ANDROID_MUSIC"] = _default_clients["ANDROID"]
 
 #pre code checks
 try:
@@ -215,14 +215,14 @@ def youtube(root):
 
         youtube_url = customtkinter.CTkEntry(master=ytmp3_window, placeholder_text="YouTube URL:", width=350)
         youtube_url.pack(padx=10, pady=0)
-        youtube_video_button = customtkinter.CTkButton(master=ytmp3_window, command=lambda: yt_mp3_video(youtube_url), text="Video", width=350)
+        youtube_video_button = customtkinter.CTkButton(master=ytmp3_window, command=lambda: threading.Thread(target=yt_mp3_video, args=(youtube_url,)).start(), text="Video", width=350)
         youtube_video_button.pack(padx=10, pady=10)
-        youtube_playlist_button = customtkinter.CTkButton(master=ytmp3_window, command=lambda: yt_mp3_playlist(youtube_url), text="Playlist", width=350)
+        youtube_playlist_button = customtkinter.CTkButton(master=ytmp3_window, command=lambda: threading.Thread(target=yt_mp3_playlist, args=(youtube_url,)).start(), text="Playlist", width=350)
         youtube_playlist_button.pack(padx=10, pady=0)
-        youtube_channel_button = customtkinter.CTkButton(master=ytmp3_window, command=lambda: yt_mp3_channel(youtube_url), text="Channel", width=350)
+        youtube_channel_button = customtkinter.CTkButton(master=ytmp3_window, command=lambda: threading.Thread(target=yt_mp3_channel, args=(youtube_url,)).start(), text="Channel", width=350)
         youtube_channel_button.pack(padx=10, pady=10)
 
-        spotify_from_txt = customtkinter.CTkButton(master=ytmp3_window, command=lambda: yt_mp3_from_txt(), text="Load from youtube_list.txt", width=350)
+        spotify_from_txt = customtkinter.CTkButton(master=ytmp3_window, command=lambda: threading.Thread(target=yt_mp3_from_txt).start(), text="Load from youtube_list.txt", width=350)
         spotify_from_txt.pack(padx=10, pady=0)
 
         back_button = customtkinter.CTkButton(master=ytmp3_window, command=ytmp3_window.destroy, text="Back", width=350)
@@ -256,7 +256,7 @@ def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
         try:
             if "track" in url:
                 os.chdir(spotify_songs_folder)
-                subprocess.run(['spotdl', url], check=True)
+                subprocess.run(['spotdl', url], check=True, stdout=subprocess.DEVNULL)
                 CTkMessagebox(message="Song successfully downloaded to content/spotify/songs", icon="check", option_1="OK")
             elif "album" in url:
                 CTkMessagebox(title="Error", message=f"{url} seems to be an album", icon="cancel")
@@ -281,12 +281,12 @@ def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
                 os.mkdir(f"{spotify_albums_folder}\\{factor_url}")
                 time.sleep(0.5)
                 os.chdir(f"{spotify_albums_folder}\\{factor_url}")
-                subprocess.run(['spotdl', url], check=True)
-                CTkMessagebox(message=f"Album successfully downloaded to content/spotify/albums/{factor_url}", icon="check", option_1="OK")
+                subprocess.run(['spotdl', url], check=True, stdout=subprocess.DEVNULL)
             elif "playlist" in url:
                 CTkMessagebox(title="Error", message=f"{url} seems to be a playlist", icon="cancel")
             else:
                 CTkMessagebox(title="Error", message=f"{url} doesnt seem to be track, album or playlist", icon="cancel")
+            CTkMessagebox(message=f"Album successfully downloaded to content/spotify/albums/{factor_url}", icon="check", option_1="OK")
         except Exception as e:
             CTkMessagebox(title="Error", message=f"{e}", icon="cancel") 
 
@@ -306,10 +306,10 @@ def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
                 os.mkdir(f"{spotify_playlists_folder}\\{factor_url}")
                 time.sleep(0.5)
                 os.chdir(f"{spotify_playlists_folder}\\{factor_url}")
-                subprocess.run(['spotdl', url], check=True)
-                CTkMessagebox(message=f"Playlist successfully downloaded to content/spotify/playlists/{factor_url}", icon="check", option_1="OK")
+                subprocess.run(['spotdl', url], check=True, stdout=subprocess.DEVNULL)
             else:
                 CTkMessagebox(title="Error", message=f"{url} doesnt seem to be track, album or playlist", icon="cancel")
+            CTkMessagebox(message=f"Playlist successfully downloaded to content/spotify/playlists/{factor_url}", icon="check", option_1="OK")
         except Exception as e:
             CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
     def sp_from_txt():
@@ -324,14 +324,14 @@ def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
                         try:
                             if "track" in url:
                                 os.chdir(spotify_songs_folder)
-                                subprocess.run(['spotdl', url], check=True)
-                                CTkMessagebox(message="Songs successfully downloaded to content/spotify/songs", icon="check", option_1="OK")
+                                subprocess.run(['spotdl', url], check=True, stdout=subprocess.DEVNULL)
                             elif "album" in url:
                                 CTkMessagebox(title="Error", message=f"{url} seems to be an album", icon="cancel")
                             elif "playlist" in url:
                                 CTkMessagebox(title="Error", message=f"{url} seems to be a playlist", icon="cancel")
                             else:
                                 CTkMessagebox(title="Error", message=f"{url} doesnt seem to be track, album or playlist", icon="cancel")
+                            CTkMessagebox(message="Songs successfully downloaded to content/spotify/songs", icon="check", option_1="OK")
                         except Exception as e:
                             CTkMessagebox(title="error", message=f"{e}", icon="cancel")
                 except Exception as e:
@@ -355,14 +355,14 @@ def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
 
     spotify_url = customtkinter.CTkEntry(master=spotify_window, placeholder_text="Spotify URL:", width=350)
     spotify_url.pack(padx=10, pady=0)
-    spotify_song_button = customtkinter.CTkButton(master=spotify_window, command=lambda: sp_song(spotify_url), text="Song", width=350)
+    spotify_song_button = customtkinter.CTkButton(master=spotify_window, command=lambda: threading.Thread(target=sp_song, args=(spotify_url,)).start(), text="Song", width=350)
     spotify_song_button.pack(padx=10, pady=10)
-    spotify_album_button = customtkinter.CTkButton(master=spotify_window, command=lambda: sp_album(spotify_url), text="Album", width=350)
+    spotify_album_button = customtkinter.CTkButton(master=spotify_window, command=lambda: threading.Thread(target=sp_album, args=(spotify_url,)).start(), text="Album", width=350)
     spotify_album_button.pack(padx=10, pady=0)
-    spotify_playlist_button = customtkinter.CTkButton(master=spotify_window, command=lambda: sp_playlist(spotify_url), text="Playlist", width=350)
+    spotify_playlist_button = customtkinter.CTkButton(master=spotify_window, command=lambda: threading.Thread(target=sp_playlist, args=(spotify_url,)).start(), text="Playlist", width=350)
     spotify_playlist_button.pack(padx=10, pady=10)
 
-    spotify_from_txt = customtkinter.CTkButton(master=spotify_window, command=lambda: sp_from_txt(), text="Load from spotify_list.txt", width=350)
+    spotify_from_txt = customtkinter.CTkButton(master=spotify_window, command=lambda: threading.Thread(target=sp_from_txt).start(), text="Load from spotify_list.txt", width=350)
     spotify_from_txt.pack(padx=10, pady=0)
 
     back_button = customtkinter.CTkButton(master=spotify_window, command=spotify_window.destroy, text="Back", width=350)
@@ -399,4 +399,33 @@ def main():
     root.mainloop()
 
 if __name__ == "__main__":
+
+    if "ffmpeg_DONT_DELETE_THIS.txt" not in os.listdir():
+        try:
+            subprocess.run(["spotdl", "--download-ffmpeg"])
+            with open("ffmpeg_DONT_DELETE_THIS.txt", "w") as file:
+                file.write("True")
+                file.close()
+        except Exception as e:
+            CTkMessagebox(title="error", message=f"{e}", icon="cancel")
+
+    elif "ffmpeg_DONT_DELETE_THIS.txt" in os.listdir():
+        with open("ffmpeg_DONT_DELETE_THIS.txt", "r") as read:
+            line = read.readline().strip('\n')
+            if line != "True":
+                CTkMessagebox(title="error", message="ffmpeg_DONT_DELETE_THIS.txt isnt populated, deleting and installing ffmpeg", icon="cancel")
+                os.remove("ffmpeg_DONT_DELETE_THIS.txt")
+                try:
+                    subprocess.run(["spotdl", "--download-ffmpeg"])
+                    with open("ffmpeg_DONT_DELETE_THIS.txt", "w") as file:
+                        file.write("True")
+                        file.close()
+                except Exception as e:
+                    CTkMessagebox(title="error", message=f"{e}", icon="cancel")
+            elif line == "True":
+                pass
+            else:
+                CTkMessagebox(title="error", message="There is an error at line 411 onwards", icon="cancel")
+    else:
+        CTkMessagebox(title="error", message="There is an error at line 400 onwards", icon="cancel")
     main()
