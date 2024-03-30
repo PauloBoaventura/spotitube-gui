@@ -204,7 +204,7 @@ def youtube(root):
             ytmp3_window.after(300, lambda: ytmp3_window.iconbitmap(f"{cwd}\\images\\youtube.ico"))
             ytmp3_window.after(300, lambda: ytmp3_window.lift())
         except:
-            print(Fore.YELLOW + "icon.ico not found, continuing")
+            pass
         ytmp3_window.title("YouTube to mp3")
 
         ytmp3_window.update()
@@ -234,7 +234,7 @@ def youtube(root):
         youtube_window.after(300, lambda: youtube_window.iconbitmap(f"{cwd}\\images\\youtube.ico"))
         youtube_window.after(300, lambda: youtube_window.lift())
     except:
-        print(Fore.YELLOW + "icon.ico not found, continuing")
+        pass
     youtube_window.title("YouTube")
 
     youtube_window.update()
@@ -256,8 +256,26 @@ def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
         try:
             if "track" in url:
                 os.chdir(spotify_songs_folder)
-                subprocess.run(['spotdl', url], check=True, stdout=subprocess.DEVNULL)
-                CTkMessagebox(message="Song successfully downloaded to content/spotify/songs", icon="check", option_1="OK")
+                try:
+                    progress_box = customtkinter.CTkToplevel(root)
+                    progress_box.title("Download Progress")
+                    progress_box.resizable(False, False)
+                    try:
+                        progress_box.after(300, lambda: progress_box.iconbitmap(f"{cwd}\\images\\spotify.ico"))
+                        progress_box.after(300, lambda: progress_box.lift())
+                    except:
+                        pass
+
+                    customtkinter.CTkLabel(master=progress_box, text=f"Downloading").pack()
+                    progress = customtkinter.CTkProgressBar(master=progress_box, width=int("300"), mode="indeterminate")
+                    progress.pack()
+                    progress.start()
+                    subprocess.run(['spotdl', url], check=True, stdout=subprocess.DEVNULL)
+                    progress.stop()
+                    progress_box.destroy()
+                    CTkMessagebox(message="Song successfully downloaded to content/spotify/songs", icon="check", option_1="OK")
+                except Exception as e:
+                    CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
             elif "album" in url:
                 CTkMessagebox(title="Error", message=f"{url} seems to be an album", icon="cancel")
             elif "playlist" in url:
@@ -281,7 +299,25 @@ def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
                 os.mkdir(f"{spotify_albums_folder}\\{factor_url}")
                 time.sleep(0.5)
                 os.chdir(f"{spotify_albums_folder}\\{factor_url}")
-                subprocess.run(['spotdl', url], check=True, stdout=subprocess.DEVNULL)
+                try:
+                    progress_box = customtkinter.CTkToplevel(root)
+                    progress_box.title("Download Progress")
+                    progress_box.resizable(False, False)
+                    try:
+                        progress_box.after(300, lambda: progress_box.iconbitmap(f"{cwd}\\images\\spotify.ico"))
+                        progress_box.after(300, lambda: progress_box.lift())
+                    except:
+                        pass
+
+                    customtkinter.CTkLabel(master=progress_box, text=f"Downloading").pack()
+                    progress = customtkinter.CTkProgressBar(master=progress_box, width=int("300"), mode="indeterminate")
+                    progress.pack()
+                    progress.start()
+                    subprocess.run(['spotdl', url], check=True, stdout=subprocess.DEVNULL)
+                    progress.stop()
+                    progress_box.destroy()
+                except Exception as e:
+                    CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
             elif "playlist" in url:
                 CTkMessagebox(title="Error", message=f"{url} seems to be a playlist", icon="cancel")
             else:
@@ -306,7 +342,25 @@ def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
                 os.mkdir(f"{spotify_playlists_folder}\\{factor_url}")
                 time.sleep(0.5)
                 os.chdir(f"{spotify_playlists_folder}\\{factor_url}")
-                subprocess.run(['spotdl', url], check=True, stdout=subprocess.DEVNULL)
+                try:
+                    progress_box = customtkinter.CTkToplevel(root)
+                    progress_box.title("Download Progress")
+                    progress_box.resizable(False, False)
+                    try:
+                        progress_box.after(300, lambda: progress_box.iconbitmap(f"{cwd}\\images\\spotify.ico"))
+                        progress_box.after(300, lambda: progress_box.lift())
+                    except:
+                        pass
+
+                    customtkinter.CTkLabel(master=progress_box, text=f"Downloading").pack()
+                    progress = customtkinter.CTkProgressBar(master=progress_box, width=int("300"), mode="indeterminate")
+                    progress.pack()
+                    progress.start()
+                    subprocess.run(['spotdl', url], check=True, stdout=subprocess.DEVNULL)
+                    progress.stop()
+                    progress_box.destroy()
+                except Exception as e:
+                    CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
             else:
                 CTkMessagebox(title="Error", message=f"{url} doesnt seem to be track, album or playlist", icon="cancel")
             CTkMessagebox(message=f"Playlist successfully downloaded to content/spotify/playlists/{factor_url}", icon="check", option_1="OK")
@@ -324,7 +378,25 @@ def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
                         try:
                             if "track" in url:
                                 os.chdir(spotify_songs_folder)
-                                subprocess.run(['spotdl', url], check=True, stdout=subprocess.DEVNULL)
+                                try:
+                                    progress_box = customtkinter.CTkToplevel(root)
+                                    progress_box.title("Download Progress")
+                                    progress_box.resizable(False, False)
+                                    try:
+                                        progress_box.after(300, lambda: progress_box.iconbitmap(f"{cwd}\\images\\spotify.ico"))
+                                        progress_box.after(300, lambda: progress_box.lift())
+                                    except:
+                                        pass
+
+                                    customtkinter.CTkLabel(master=progress_box, text=f"Downloading").pack()
+                                    progress = customtkinter.CTkProgressBar(master=progress_box, width=int("300"), mode="indeterminate")
+                                    progress.pack()
+                                    progress.start()
+                                    subprocess.run(['spotdl', url], check=True, stdout=subprocess.DEVNULL)
+                                    progress.stop()
+                                    progress_box.destroy()
+                                except Exception as e:
+                                    CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
                             elif "album" in url:
                                 CTkMessagebox(title="Error", message=f"{url} seems to be an album", icon="cancel")
                             elif "playlist" in url:
@@ -344,7 +416,7 @@ def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
         spotify_window.after(300, lambda: spotify_window.iconbitmap(f"{cwd}\\images\\spotify.ico"))
         spotify_window.after(300, lambda: spotify_window.lift())
     except:
-        print(Fore.YELLOW + "icon.ico not found, continuing")
+        pass
     spotify_window.title("Spotify")
 
     spotify_window.update()
@@ -376,7 +448,7 @@ def main():
     try:
         root.iconbitmap(icon)
     except:
-        print(Fore.YELLOW + "icon.ico not found, continuing")
+        pass
         
     root.update()
     window_width = root.winfo_width()
