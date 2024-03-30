@@ -27,6 +27,18 @@
 - TikTok downloader
 - Instagram downloader
 
+**How to install and use**
+```console 
+# git clone https://github.com/3022-2/spotitube-gui.git
+
+# cd spotitube-gui
+
+# pip install -r requirements.txt
+
+If you want to run the code with a terminal run python main.py. If you dont want a terminal just double click main.pyw
+
+```
+
 **To use simply enter the URL to either Spotify song/playlist/album or YouTube video/channel/playlist into the entry box and press the button for the tyoe of link you are using**
 
 ![Screenshot 2024-03-30 162708](https://github.com/3022-2/spotitube-gui/assets/82278708/77846002-2382-49c4-8211-6911a72dc653)
