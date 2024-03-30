@@ -71,10 +71,9 @@ def youtube(root):
             try:
                 url = str(youtube_url.get()).strip("")
                 yt = YouTube(url)
-                title = yt.title
 
                 try:
-                    title = sanitize_filename(title)
+                    title = sanitize_filename(yt.title)
                     output_path = f"{youtube_videos_folder_mp3}\\{title}"
                 except Exception as e:
                     CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
@@ -99,16 +98,18 @@ def youtube(root):
                 playlist = Playlist(url)
 
                 try:
-                    title = sanitize_filename(playlist.title)
-                    output_path = f"{youtube_playlists_folder_mp3}\\{title}"
-                except Exception as e:
-                    CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
-
-                try:
                     for video_url in playlist.video_urls:
                         yt = YouTube(video_url)
+
+                        try:
+                            title = sanitize_filename(playlist.title)
+                            video_title = sanitize_filename(yt.title)
+                            output_path = f"{youtube_playlists_folder_mp3}\\{title}"
+                        except Exception as e:
+                            CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
+
                         audio_stream = yt.streams.filter(only_audio=True).first()
-                        down = audio_stream.download(output_path=output_path)
+                        down = audio_stream.download(output_path=output_path, filename=video_title)
                         base, extension = os.path.splitext(down)
                         new_file = base + '.mp3'
                         original_stdout = sys.stdout
@@ -165,8 +166,18 @@ def youtube(root):
             except Exception as e:
                 CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
         def yt_mp3_from_txt():
-            CTkMessagebox(title="uncomleted code - this wont work", message=f"{e}", icon="cancel")
-
+            with open(f"{cwd}\\youtube_list.txt", "r") as file:
+                file = file.readlines()
+                for line in file:
+                    url = line.strip()
+                    try:
+                        if "you can add youtube VIDEO links to download from txt - remove the links below and add what you want AS LONG AS IN THE RIGHT FORMAT" in url:
+                            pass
+                        else:
+                            yt = YouTube(url)
+                            print(yt.title)
+                    except Exception as e:
+                        CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
         ytmp3_window = customtkinter.CTkToplevel(root)
         ytmp3_window.minsize(480, 330)
         ytmp3_window.maxsize(480, 330)
