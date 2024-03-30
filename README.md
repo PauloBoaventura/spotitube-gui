@@ -1,4 +1,4 @@
-**spotitube gui**
+**spotitube gui - ONLY FOR WINDOWS**
 ---
 **A YouTube video/audio downloader and a spotify audio downloader written in python based on https://github.com/3022-2/spotitube**
 ---
