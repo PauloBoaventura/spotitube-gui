@@ -50,7 +50,7 @@ icon = f"{cwd}\\icon.ico" #icon from https://icon-icons.com/
 youtube_videos_folder_mp3 = f"{cwd}\\content\\youtube\\videos\\mp3"
 youtube_videos_folder_mp4 = f"{cwd}\\content\\youtube\\videos\\mp4"
 youtube_playlists_folder_mp3 = f"{cwd}\\content\\youtube\\playlists\\mp3"
-youtube_playlists_folder_mp4 = f"{cwd}\\content\\youtube\\videos\\mp4"
+youtube_playlists_folder_mp4 = f"{cwd}\\content\\youtube\\playlists\\mp4"
 youtube_channels_folder_mp3 = f"{cwd}\\content\\youtube\\channels\\mp3"
 youtube_channels_folder_mp4 = f"{cwd}\\content\\youtube\\channels\\mp4"
 
@@ -215,7 +215,209 @@ def youtube(root):
             except Exception as e:
                 CTkMessagebox(title="Error", message=f"{e} - set a resolution", icon="cancel")
         def yt_mp4_playlist(youtube_url):
-            pass
+            resolution = str(res)
+            try:
+                    progress_box = customtkinter.CTkToplevel(root)
+                    progress_box.title("Download Progress")
+                    progress_box.resizable(False, False)
+                    try:
+                        progress_box.after(300, lambda: progress_box.iconbitmap(f"{cwd}\\images\\youtube.ico"))
+                        progress_box.after(300, lambda: progress_box.lift())
+                    except:
+                        pass
+                    customtkinter.CTkLabel(master=progress_box, text=f"Downloading").pack()
+                    progress = customtkinter.CTkProgressBar(master=progress_box, width=int("300"), mode="indeterminate")
+                    progress.pack()
+                    progress.start()
+
+                    url = str(youtube_url.get()).strip("")
+
+                    playlist = Playlist(url)
+
+                    try:
+                        playlist_title = sanitize_filename(playlist.title)
+                        output_path = f"{youtube_playlists_folder_mp4}\\{playlist_title}"
+                    except Exception as e:
+                        CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
+                    
+                    if resolution == "Highest resolution":
+                        try:
+                            for video_url in playlist.video_urls:
+                                yt = YouTube(video_url)
+
+                                try:
+                                    title = sanitize_filename(yt.title)
+                                except Exception as e:
+                                    CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
+
+                                high_res_video = yt.streams.get_highest_resolution()
+                                high_res_video.download(output_path=f"{output_path}_highest_res", filename=f"{title}.mp4")
+
+                            progress.stop()
+                            progress_box.destroy()
+                            CTkMessagebox(message=f"{title} successfully downloaded to {output_path}_highest_res", icon="check", option_1="OK")
+                        except Exception as e:
+                            CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
+                    elif resolution == "144p":
+                        try:
+                            for video_url in playlist.video_urls:
+                                yt = YouTube(video_url)
+
+                                try:
+                                    title = sanitize_filename(yt.title)
+                                except Exception as e:
+                                    CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
+
+                                yt.streams.filter(only_audio=True).first().download(output_path=f"{output_path}_144p", filename=f"{title}.mp3")
+                                yt.streams.filter(res="144p").first().download(output_path=f"{output_path}_144p", filename=f"{title}.mp4")
+
+                                video_file_path = os.path.join(f"{output_path}_144p", f"{title}.mp4")
+                                audio_file_path = os.path.join(f"{output_path}_144p", f"{title}.mp3")
+
+                                user_directories = os.listdir("C:\\Users")
+                                for user in user_directories:
+                                    spotdl_path = os.path.join("C:\\Users", user, ".spotdl\\ffmpeg.exe")
+                                    if os.path.exists(spotdl_path):
+                                        output_video_path = os.path.join(f"{output_path}_144p", f"{title}_144p.mp4")
+
+                                        subprocess.run([spotdl_path, '-i', video_file_path, '-i', audio_file_path, '-c:v', 'libx264', '-c:a', 'aac', '-strict', 'experimental', '-map', '0:v', '-map', '1:a', '-shortest', output_video_path], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                                        time.sleep(0.5)
+                                        os.remove(video_file_path)
+                                        os.remove(audio_file_path)
+                                        break
+                        except Exception as e:
+                            progress.stop()
+                            progress_box.destroy()
+                            shutil.rmtree(output_path)
+                            time.sleep(0.5)
+                            CTkMessagebox(title="Error", message=f"{e} - maybe the video doesnt support the resolution", icon="cancel")
+                        progress.stop()
+                        progress_box.destroy()
+                        CTkMessagebox(message=f"Videos successfully downloaded to {output_path}", icon="check", option_1="OK")
+                    elif resolution == "240p":
+                        try:
+                            for video_url in playlist.video_urls:
+                                yt = YouTube(video_url)
+
+                                try:
+                                    title = sanitize_filename(yt.title)
+                                except Exception as e:
+                                    CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
+
+                                yt.streams.filter(only_audio=True).first().download(output_path=f"{output_path}_240p", filename=f"{title}.mp3")
+                                yt.streams.filter(res="240p").first().download(output_path=f"{output_path}_240p", filename=f"{title}.mp4")
+
+                                video_file_path = os.path.join(f"{output_path}_240p", f"{title}.mp4")
+                                audio_file_path = os.path.join(f"{output_path}_240p", f"{title}.mp3")
+
+                                user_directories = os.listdir("C:\\Users")
+                                for user in user_directories:
+                                    spotdl_path = os.path.join("C:\\Users", user, ".spotdl\\ffmpeg.exe")
+                                    if os.path.exists(spotdl_path):
+                                        output_video_path = os.path.join(f"{output_path}_240p", f"{title}_240p.mp4")
+
+                                        subprocess.run([spotdl_path, '-i', video_file_path, '-i', audio_file_path, '-c:v', 'libx264', '-c:a', 'aac', '-strict', 'experimental', '-map', '0:v', '-map', '1:a', '-shortest', output_video_path], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                                        time.sleep(0.5)
+                                        os.remove(video_file_path)
+                                        os.remove(audio_file_path)
+                                        break
+                        except Exception as e:
+                            progress.stop()
+                            progress_box.destroy()
+                            shutil.rmtree(output_path)
+                            time.sleep(0.5)
+                            CTkMessagebox(title="Error", message=f"{e} - maybe the video doesnt support the resolution", icon="cancel")
+                        progress.stop()
+                        progress_box.destroy()
+                        CTkMessagebox(message=f"Videos successfully downloaded to {output_path}", icon="check", option_1="OK")
+                    elif resolution == "480p":
+                        try:
+                            for video_url in playlist.video_urls:
+                                yt = YouTube(video_url)
+
+                                try:
+                                    title = sanitize_filename(yt.title)
+                                except Exception as e:
+                                    CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
+
+                                yt.streams.filter(only_audio=True).first().download(output_path=f"{output_path}_480p", filename=f"{title}.mp3")
+                                yt.streams.filter(res="480p").first().download(output_path=f"{output_path}_480p", filename=f"{title}.mp4")
+
+                                video_file_path = os.path.join(f"{output_path}_480p", f"{title}.mp4")
+                                audio_file_path = os.path.join(f"{output_path}_480p", f"{title}.mp3")
+
+                                user_directories = os.listdir("C:\\Users")
+                                for user in user_directories:
+                                    spotdl_path = os.path.join("C:\\Users", user, ".spotdl\\ffmpeg.exe")
+                                    if os.path.exists(spotdl_path):
+                                        output_video_path = os.path.join(f"{output_path}_480p", f"{title}_480p.mp4")
+
+                                        subprocess.run([spotdl_path, '-i', video_file_path, '-i', audio_file_path, '-c:v', 'libx264', '-c:a', 'aac', '-strict', 'experimental', '-map', '0:v', '-map', '1:a', '-shortest', output_video_path], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                                        time.sleep(0.5)
+                                        os.remove(video_file_path)
+                                        os.remove(audio_file_path)
+                                        break
+                        except Exception as e:
+                            progress.stop()
+                            progress_box.destroy()
+                            shutil.rmtree(output_path)
+                            time.sleep(0.5)
+                            CTkMessagebox(title="Error", message=f"{e} - maybe the video doesnt support the resolution", icon="cancel")
+                        progress.stop()
+                        progress_box.destroy()
+                        CTkMessagebox(message=f"Videos successfully downloaded to {output_path}", icon="check", option_1="OK")
+                    elif resolution == "1080p":
+                        try:
+                            for video_url in playlist.video_urls:
+                                yt = YouTube(video_url)
+
+                                try:
+                                    title = sanitize_filename(yt.title)
+                                except Exception as e:
+                                    CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
+
+                                yt.streams.filter(only_audio=True).first().download(output_path=f"{output_path}_1080p", filename=f"{title}.mp3")
+                                yt.streams.filter(res="1080p").first().download(output_path=f"{output_path}_1080p", filename=f"{title}.mp4")
+
+                                video_file_path = os.path.join(f"{output_path}_1080p", f"{title}.mp4")
+                                audio_file_path = os.path.join(f"{output_path}_1080p", f"{title}.mp3")
+
+                                user_directories = os.listdir("C:\\Users")
+                                for user in user_directories:
+                                    spotdl_path = os.path.join("C:\\Users", user, ".spotdl\\ffmpeg.exe")
+                                    if os.path.exists(spotdl_path):
+                                        output_video_path = os.path.join(f"{output_path}_1080p", f"{title}_1080p.mp4")
+
+                                        subprocess.run([spotdl_path, '-i', video_file_path, '-i', audio_file_path, '-c:v', 'libx264', '-c:a', 'aac', '-strict', 'experimental', '-map', '0:v', '-map', '1:a', '-shortest', output_video_path], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                                        time.sleep(0.5)
+                                        os.remove(video_file_path)
+                                        os.remove(audio_file_path)
+                                        break
+                        except Exception as e:
+                            progress.stop()
+                            progress_box.destroy()
+                            shutil.rmtree(output_path)
+                            time.sleep(0.5)
+                            CTkMessagebox(title="Error", message=f"{e} - maybe the video doesnt support the resolution", icon="cancel")
+                        progress.stop()
+                        progress_box.destroy()
+                        CTkMessagebox(message=f"Videos successfully downloaded to {output_path}", icon="check", option_1="OK")
+                    else:
+                        try:
+                            for video_url in playlist.video_urls:
+                                yt = YouTube(video_url)
+                                try:
+                                    title = sanitize_filename(yt.title)
+                                except Exception as e:
+                                    CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
+                                yt.streams.filter(res=resolution).first().download(output_path=f"{output_path}_{resolution}", filename=f"{title}_{resolution}.mp4")
+                            progress.stop()
+                            progress_box.destroy()
+                            CTkMessagebox(message=f"Videos successfully downloaded to {output_path}_{resolution}", icon="check", option_1="OK")
+                        except Exception as e:
+                            CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
+            except Exception as e:
+                CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
         def yt_mp4_channel(youtube_url):
             pass
         def yt_mp4_from_txt(youtube_url):
