@@ -18,7 +18,6 @@ cwd = os.getcwd()
 customtkinter.set_appearance_mode("dark")
 init(autoreset=True)
 
-#pre code checks
 try:
     if os.path.exists(f"{cwd}\\content") == False:
         os.mkdir(f"{cwd}\\content")
@@ -44,8 +43,7 @@ try:
 except Exception as e:
     print(Fore.RED + e)
 
-#defining vars
-icon = f"{cwd}\\icon.ico" #icon from https://icon-icons.com/
+icon = f"{cwd}\\icon.ico"
 
 youtube_videos_folder_mp3 = f"{cwd}\\content\\youtube\\videos\\mp3"
 youtube_videos_folder_mp4 = f"{cwd}\\content\\youtube\\videos\\mp4"
@@ -419,9 +417,246 @@ def youtube(root):
             except Exception as e:
                 CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
         def yt_mp4_channel(youtube_url):
-            pass
-        def yt_mp4_from_txt(youtube_url):
-            pass
+            try:
+                url = str(youtube_url.get()).strip("")
+                if "/channel/" not in url:
+                    CTkMessagebox(title="Error", message=f"Channel url must be in format of /channel/(channel id)", icon="cancel")
+                elif "/channel/" in url:
+                    channel = ChannelFIX(url)
+                    resolution = str(res)
+                    try:
+                        progress_box = customtkinter.CTkToplevel(root)
+                        progress_box.title("Download Progress")
+                        progress_box.resizable(False, False)
+                        try:
+                            progress_box.after(300, lambda: progress_box.iconbitmap(f"{cwd}\\images\\youtube.ico"))
+                            progress_box.after(300, lambda: progress_box.lift())
+                        except:
+                            pass
+
+                        customtkinter.CTkLabel(master=progress_box, text=f"Downloading").pack()
+                        progress = customtkinter.CTkProgressBar(master=progress_box, width=int("300"), mode="indeterminate")
+                        progress.pack()
+                        progress.start()
+
+                        if resolution == "Highest resolution":
+                            for url in channel.video_urls:
+                                try:
+                                    url = str(url).strip("<pytubefix.__main__.YouTube object: videoId=")
+                                    url = url.strip(">")
+                                    url = f"https://youtube.com/watch/{url}"
+
+                                    yt = YouTube(url)
+                                    try:
+                                        title = sanitize_filename(channel.channel_name)
+                                        output_path = f"{youtube_channels_folder_mp4}\\{title}"
+                                        video_title = sanitize_filename(yt.title)
+                                    except Exception as e:
+                                        CTkMessagebox(title="Error", message=f"{e} - odds are your videos are still downloading even if download bar is gone ", icon="cancel")
+                                    high_res_video = yt.streams.get_highest_resolution()
+                                    high_res_video.download(output_path=f"{output_path}_highest_res", filename=f"{video_title}.mp4")
+                                except Exception as e:
+                                    CTkMessagebox(title="Error", message=f"{e} - if error is re - odds are your videos are still downloading even if download bar is gone", icon="cancel")
+                                progress.start()
+                                progress_box.destroy()
+                        elif resolution == "144p":
+                            try:
+                                for url in channel.video_urls:
+
+                                    url = str(url).strip("<pytubefix.__main__.YouTube object: videoId=")
+                                    url = url.strip(">")
+                                    url = f"https://youtube.com/watch/{url}"
+
+                                    yt = YouTube(url)
+
+                                    try:
+                                        title = sanitize_filename(channel.channel_name)
+                                        output_path = f"{youtube_channels_folder_mp4}\\{title}"
+                                        video_title = sanitize_filename(yt.title)
+                                    except Exception as e:
+                                        CTkMessagebox(title="Error", message=f"{e} - odds are your videos are still downloading even if download bar is gone ", icon="cancel")
+
+                                    yt.streams.filter(only_audio=True).first().download(output_path=f"{output_path}_144p", filename=f"{video_title}_144p.mp3")
+                                    yt.streams.filter(res="144p").first().download(output_path=f"{output_path}_144p", filename=f"{video_title}_144p.mp4")
+
+                                    video_file_path = os.path.join(f"{output_path}_144p", f"{video_title}_144p.mp4")
+                                    audio_file_path = os.path.join(f"{output_path}_144p", f"{video_title}_144p.mp3")
+                                    
+                                    user_directories = os.listdir("C:\\Users")
+                                    for user in user_directories:
+                                        spotdl_path = os.path.join("C:\\Users", user, ".spotdl\\ffmpeg.exe")
+                                        if os.path.exists(spotdl_path):
+                                            output_video_path = os.path.join(f"{output_path}_144p", f"{video_title}.mp4")
+                                            subprocess.run([spotdl_path, '-i', video_file_path, '-i', audio_file_path, '-c:v', 'libx264', '-c:a', 'aac', '-strict', 'experimental', '-map', '0:v', '-map', '1:a', '-shortest', output_video_path], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                                            time.sleep(0.5)
+                                            os.remove(video_file_path)
+                                            os.remove(audio_file_path)
+                                            break
+                            except Exception as e:
+                                progress.stop()
+                                progress_box.destroy()
+                                shutil.rmtree(output_path)
+                                time.sleep(0.5)
+                                CTkMessagebox(title="Error", message=f"{e} - maybe the video doesnt support the resolution", icon="cancel")
+                            progress.stop()
+                            progress_box.destroy()
+                            CTkMessagebox(message=f"Videos successfully downloaded to {output_path}", icon="check", option_1="OK")
+                        elif resolution == "240p":
+                            try:
+                                for url in channel.video_urls:
+
+                                    url = str(url).strip("<pytubefix.__main__.YouTube object: videoId=")
+                                    url = url.strip(">")
+                                    url = f"https://youtube.com/watch/{url}"
+
+                                    yt = YouTube(url)
+
+                                    try:
+                                        title = sanitize_filename(channel.channel_name)
+                                        output_path = f"{youtube_channels_folder_mp4}\\{title}"
+                                        video_title = sanitize_filename(yt.title)
+                                    except Exception as e:
+                                        CTkMessagebox(title="Error", message=f"{e} - odds are your videos are still downloading even if download bar is gone ", icon="cancel")
+
+                                    yt.streams.filter(only_audio=True).first().download(output_path=f"{output_path}_240p", filename=f"{video_title}_240p.mp3")
+                                    yt.streams.filter(res="240p").first().download(output_path=f"{output_path}_240p", filename=f"{video_title}_240p.mp4")
+
+                                    video_file_path = os.path.join(f"{output_path}_240p", f"{video_title}_240p.mp4")
+                                    audio_file_path = os.path.join(f"{output_path}_240p", f"{video_title}_240p.mp3")
+                                    
+                                    user_directories = os.listdir("C:\\Users")
+                                    for user in user_directories:
+                                        spotdl_path = os.path.join("C:\\Users", user, ".spotdl\\ffmpeg.exe")
+                                        if os.path.exists(spotdl_path):
+                                            output_video_path = os.path.join(f"{output_path}_144p", f"{video_title}.mp4")
+                                            subprocess.run([spotdl_path, '-i', video_file_path, '-i', audio_file_path, '-c:v', 'libx264', '-c:a', 'aac', '-strict', 'experimental', '-map', '0:v', '-map', '1:a', '-shortest', output_video_path], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                                            time.sleep(0.5)
+                                            os.remove(video_file_path)
+                                            os.remove(audio_file_path)
+                                            break
+                            except Exception as e:
+                                progress.stop()
+                                progress_box.destroy()
+                                shutil.rmtree(output_path)
+                                time.sleep(0.5)
+                                CTkMessagebox(title="Error", message=f"{e} - maybe the video doesnt support the resolution", icon="cancel")
+                            progress.stop()
+                            progress_box.destroy()
+                            CTkMessagebox(message=f"Videos successfully downloaded to {output_path}", icon="check", option_1="OK")
+                        elif resolution == "480p":
+                            try:
+                                for url in channel.video_urls:
+
+                                    url = str(url).strip("<pytubefix.__main__.YouTube object: videoId=")
+                                    url = url.strip(">")
+                                    url = f"https://youtube.com/watch/{url}"
+
+                                    yt = YouTube(url)
+
+                                    try:
+                                        title = sanitize_filename(channel.channel_name)
+                                        output_path = f"{youtube_channels_folder_mp4}\\{title}"
+                                        video_title = sanitize_filename(yt.title)
+                                    except Exception as e:
+                                        CTkMessagebox(title="Error", message=f"{e} - odds are your videos are still downloading even if download bar is gone ", icon="cancel")
+
+                                    yt.streams.filter(only_audio=True).first().download(output_path=f"{output_path}_480p", filename=f"{video_title}_480p.mp3")
+                                    yt.streams.filter(res="480p").first().download(output_path=f"{output_path}_480p", filename=f"{video_title}_480p.mp4")
+
+                                    video_file_path = os.path.join(f"{output_path}_480p", f"{video_title}_480p.mp4")
+                                    audio_file_path = os.path.join(f"{output_path}_480p", f"{video_title}_480p.mp3")
+                                    
+                                    user_directories = os.listdir("C:\\Users")
+                                    for user in user_directories:
+                                        spotdl_path = os.path.join("C:\\Users", user, ".spotdl\\ffmpeg.exe")
+                                        if os.path.exists(spotdl_path):
+                                            output_video_path = os.path.join(f"{output_path}_480p", f"{video_title}.mp4")
+                                            subprocess.run([spotdl_path, '-i', video_file_path, '-i', audio_file_path, '-c:v', 'libx264', '-c:a', 'aac', '-strict', 'experimental', '-map', '0:v', '-map', '1:a', '-shortest', output_video_path], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                                            time.sleep(0.5)
+                                            os.remove(video_file_path)
+                                            os.remove(audio_file_path)
+                                            break
+                            except Exception as e:
+                                progress.stop()
+                                progress_box.destroy()
+                                shutil.rmtree(output_path)
+                                time.sleep(0.5)
+                                CTkMessagebox(title="Error", message=f"{e} - maybe the video doesnt support the resolution", icon="cancel")
+                            progress.stop()
+                            progress_box.destroy()
+                            CTkMessagebox(message=f"Videos successfully downloaded to {output_path}", icon="check", option_1="OK")
+                        elif resolution == "1080p":
+                            try:
+                                for url in channel.video_urls:
+
+                                    url = str(url).strip("<pytubefix.__main__.YouTube object: videoId=")
+                                    url = url.strip(">")
+                                    url = f"https://youtube.com/watch/{url}"
+
+                                    yt = YouTube(url)
+
+                                    try:
+                                        title = sanitize_filename(channel.channel_name)
+                                        output_path = f"{youtube_channels_folder_mp4}\\{title}"
+                                        video_title = sanitize_filename(yt.title)
+                                    except Exception as e:
+                                        CTkMessagebox(title="Error", message=f"{e} - odds are your videos are still downloading even if download bar is gone ", icon="cancel")
+
+                                    yt.streams.filter(only_audio=True).first().download(output_path=f"{output_path}_1080p", filename=f"{video_title}_1080p.mp3")
+                                    yt.streams.filter(res="1080p").first().download(output_path=f"{output_path}_1080p", filename=f"{video_title}_1080p.mp4")
+
+                                    video_file_path = os.path.join(f"{output_path}_1080p", f"{video_title}_1080p.mp4")
+                                    audio_file_path = os.path.join(f"{output_path}_1080p", f"{video_title}_1080p.mp3")
+                                    
+                                    user_directories = os.listdir("C:\\Users")
+                                    for user in user_directories:
+                                        spotdl_path = os.path.join("C:\\Users", user, ".spotdl\\ffmpeg.exe")
+                                        if os.path.exists(spotdl_path):
+                                            output_video_path = os.path.join(f"{output_path}_1080p", f"{video_title}.mp4")
+                                            subprocess.run([spotdl_path, '-i', video_file_path, '-i', audio_file_path, '-c:v', 'libx264', '-c:a', 'aac', '-strict', 'experimental', '-map', '0:v', '-map', '1:a', '-shortest', output_video_path], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                                            time.sleep(0.5)
+                                            os.remove(video_file_path)
+                                            os.remove(audio_file_path)
+                                            break
+                            except Exception as e:
+                                progress.stop()
+                                progress_box.destroy()
+                                shutil.rmtree(output_path)
+                                time.sleep(0.5)
+                                CTkMessagebox(title="Error", message=f"{e} - maybe the video doesnt support the resolution", icon="cancel")
+                            progress.stop()
+                            progress_box.destroy()
+                            CTkMessagebox(message=f"Videos successfully downloaded to {output_path}", icon="check", option_1="OK")
+                        else:
+                            try:
+                                for url in channel.video_urls:
+                                    url = str(url).strip("<pytubefix.__main__.YouTube object: videoId=")
+                                    url = url.strip(">")
+                                    url = f"https://youtube.com/watch/{url}"
+
+                                    yt = YouTube(url)
+
+                                    try:
+                                        title = sanitize_filename(channel.channel_name)
+                                        output_path = f"{youtube_channels_folder_mp4}\\{title}"
+                                        video_title = sanitize_filename(yt.title)
+                                    except Exception as e:
+                                        CTkMessagebox(title="Error", message=f"{e} - odds are your videos are still downloading even if download bar is gone ", icon="cancel")
+                                    
+                                    yt.streams.filter(res=resolution).first().download(output_path=f"{output_path}_{resolution}", filename=f"{video_title}_{resolution}.mp4")
+                                progress.stop()
+                                progress_box.destroy()
+                                CTkMessagebox(message=f"Videos successfully downloaded to {output_path}_{resolution}", icon="check", option_1="OK")
+                            except Exception as e:
+                                CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
+                    except Exception as e:
+                        CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
+                else:
+                    CTkMessagebox(title="Error", message=f"some kind of error with your input - not sure what though", icon="cancel")  
+            except Exception as e:
+                CTkMessagebox(title="Error", message=f"{e}", icon="cancel")
+        def yt_mp4_from_txt():
+            CTkMessagebox(title="Error", message=f"Hasnt been coded yet", icon="cancel")
         ytmp4_window = customtkinter.CTkToplevel(root)
         ytmp4_window.minsize(480, 330)
         ytmp4_window.maxsize(480, 330)
@@ -438,6 +673,8 @@ def youtube(root):
 
         top_frame = customtkinter.CTkFrame(master=ytmp4_window, width=window_width, height=30, fg_color="#242424")
         top_frame.pack(padx=10, pady=10)
+
+        customtkinter.CTkLabel(master=top_frame, text="YouTube video downloads can be slow/lag with progress box. Video/s are still being downloaded. It is a issue with pytube and ffmpeg i believe", wraplength=450).pack()
 
         youtube_url = customtkinter.CTkEntry(master=ytmp4_window, placeholder_text="YouTube URL:", width=350)
         youtube_url.pack(padx=10, pady=0)   
@@ -461,17 +698,17 @@ def youtube(root):
         resolution_option.pack(padx=10, pady=10)
 
         youtube_video_button = customtkinter.CTkButton(master=ytmp4_window, command=lambda: threading.Thread(target=yt_mp4_video, args=(youtube_url,)).start(), text="Video", width=350)
-        youtube_video_button.pack(padx=10, pady=10)
+        youtube_video_button.pack(padx=10, pady=0)
         youtube_playlist_button = customtkinter.CTkButton(master=ytmp4_window, command=lambda: threading.Thread(target=yt_mp4_playlist, args=(youtube_url,)).start(), text="Playlist", width=350)
-        youtube_playlist_button.pack(padx=10, pady=0)
+        youtube_playlist_button.pack(padx=10, pady=10)
         youtube_channel_button = customtkinter.CTkButton(master=ytmp4_window, command=lambda: threading.Thread(target=yt_mp4_channel, args=(youtube_url,)).start(), text="Channel", width=350)
-        youtube_channel_button.pack(padx=10, pady=10)
+        youtube_channel_button.pack(padx=10, pady=0)
 
         spotify_from_txt = customtkinter.CTkButton(master=ytmp4_window, command=lambda: threading.Thread(target=yt_mp4_from_txt).start(), text="Load from youtube_list.txt", width=350)
-        spotify_from_txt.pack(padx=10, pady=0)
+        spotify_from_txt.pack(padx=10, pady=10)
 
         back_button = customtkinter.CTkButton(master=ytmp4_window, command=ytmp4_window.destroy, text="Back", width=350)
-        back_button.pack(padx=10, pady=10)
+        back_button.pack(padx=10, pady=0)
 
     def yt_to_mp3(root):
         def yt_mp3_video(youtube_url):
@@ -578,6 +815,7 @@ def youtube(root):
                             progress_box.after(300, lambda: progress_box.lift())
                         except:
                             pass
+
                         customtkinter.CTkLabel(master=progress_box, text=f"Downloading").pack()
                         progress = customtkinter.CTkProgressBar(master=progress_box, width=int("300"), mode="indeterminate")
                         progress.pack()
@@ -718,7 +956,7 @@ def youtube(root):
     back_button = customtkinter.CTkButton(master=youtube_window, command=youtube_window.destroy, text="Back", width=350)
     back_button.pack(padx=10, pady=0)
 
-def spotify(root): #using spotdl https://github.com/marshallcares/spotdl
+def spotify(root):
     def sp_song(spotify_url):
         url = str(spotify_url.get())
         try:
@@ -925,7 +1163,6 @@ def main():
     top_frame.pack(padx=10, pady=10)
     customtkinter.CTkLabel(master=top_frame, text="SPOTITUBE GUI", text_color="grey",font=("", 20), width=window_width, height=50).pack()
     
-    #buttons
     youtube_button = customtkinter.CTkButton(master=root, command=lambda: youtube(root), text="YouTube", width=350)
     youtube_button.pack(padx=10, pady=0)
     spotify_button = customtkinter.CTkButton(master=root, command=lambda: spotify(root), text="Spotify", width=350)
